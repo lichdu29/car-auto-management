@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%; */
+}
+
+@layer components {
+  .icon {
+    @apply w-8 text-gray-400 h-8 rounded-[6px] mr-[11px] align-middle inline-flex justify-center items-center shadow-md;
+  }
+  .ant-menu-item-selected .icon {
+    @apply bg-blue-500 text-white;
+  }
+
+  .menu-item.ant-menu-item-selected {
+    @apply bg-white shadow-md font-semibold;
+  }
+
+  .menu-item-header {
+    @apply bg-transparent;
+  }
+}
