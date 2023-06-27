@@ -25,11 +25,11 @@ const validateMessages = {
 const messages = {
   create: {
     success: 'User has been created',
-    error: 'Failed to create user, please try again',
+    error: 'Failed to create new user, please try again',
   },
   update: {
     success: 'User has been updated',
-    error: 'Failed to update user, please try again',
+    error: 'Failed to update current user, please try again',
   },
 }
 
