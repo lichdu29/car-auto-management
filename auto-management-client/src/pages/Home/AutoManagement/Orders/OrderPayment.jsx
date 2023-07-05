@@ -167,7 +167,7 @@ function OrderPayment() {
             <Button key="submit" type="primary" onClick={handleOk}>
               Confirm
             </Button>,
-            <Button key="back">Cancel</Button>,
+            <Button key="back" onClick={() => setIsOpen(false)}>Cancel</Button>,
           ]}
         >
           <p>
