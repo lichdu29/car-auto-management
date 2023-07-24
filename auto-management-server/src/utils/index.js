@@ -30,4 +30,13 @@ module.exports = {
 
     return updatedDocument
   },
+
+  formatDate: (str) => {
+    const [dateValues, timeValues] = str.split(' ')
+
+    const [year, month, day] = dateValues.split('-')
+    const [hours, minutes] = timeValues.split(':')
+
+    return new Date(Date.UTC(+year, +month - 1, +day, +hours, +minutes, 0))
+  },
 }

@@ -27,7 +27,7 @@ const layout = {
     span: 24,
   },
 }
-
+const TIME_FORMAT = 'YYYY-MM-DD HH:mm'
 /* eslint-disable no-template-curly-in-string */
 const validateMessages = {
   required: '${label} is required!',
@@ -66,7 +66,10 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const services = useWatch('services', form)
   const totalCost = useMemo(() => {
     if (!services) return 0
-    return services.reduce((total, item) => total + item.title, 0)
+    return services.reduce((total, item) => {
+      const cost = +item.label.split(': ')[1].slice(0, -1)
+      return total + cost
+    }, 0)
   }, [services])
 
   useEffect(() => {
@@ -157,15 +160,16 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       name: service.key,
       cost: service.title,
     }))
-    const startDate = dayjs(values.startDate).format('YYYY-MM-DD')
+
+    const startDate = dayjs(values.startDate).format(TIME_FORMAT)
+    // console.log(startDate)
     const endDate = values.endDate
-      ? dayjs(values.endDate).format('YYYY-MM-DD')
+      ? dayjs(values.endDate).format(TIME_FORMAT)
       : null
     const status = values.status
     const payment = {
       paymentStatus: values.payment,
-      payAtTime:
-        values.payment === 'PAID' ? dayjs().format('YYYY-MM-DD') : null,
+      payAtTime: values.payment === 'PAID' ? dayjs().format(TIME_FORMAT) : null,
     }
     const data = {
       name,
@@ -304,6 +308,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
               options={[
                 { label: 'WORKING', value: 'WORKING' },
                 { label: 'DONE', value: 'DONE' },
+                { label: 'PRE ORDER', value: 'PRE_ORDER' },
               ]}
             />
           </Form.Item>
@@ -315,7 +320,11 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
             label="Start Date"
             rules={[{ required: true }]}
           >
-            <DatePicker format={'DD/MM/YYYY'} className="w-full" />
+            <DatePicker
+              showTime={{ format: 'HH:mm' }}
+              format={TIME_FORMAT}
+              className="w-full"
+            />
           </Form.Item>
         </Col>
 
@@ -335,17 +344,17 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
                         )
                       )
                     if (
-                      dayjs(value) < dayjs() &&
+                      dayjs(value) < dayjs(getFieldValue('startDate')) &&
                       getFieldValue('status') === 'WORKING'
                     )
                       return Promise.reject(
                         new Error(
-                          'Order status is WORKING so end date must be today or later'
+                          'Start date must be less than or equal to End date'
                         )
                       )
                     return Promise.resolve()
                   } else {
-                    if (getFieldValue('status') === 'WORKING')
+                    if (getFieldValue('status') !== 'DONE')
                       return Promise.resolve()
                     return Promise.reject(new Error('End date is required'))
                   }
@@ -353,7 +362,11 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
               }),
             ]}
           >
-            <DatePicker format={'DD/MM/YYYY'} className="w-full" />
+            <DatePicker
+              showTime={{ format: 'HH:mm' }}
+              format={TIME_FORMAT}
+              className="w-full"
+            />
           </Form.Item>
         </Col>
 

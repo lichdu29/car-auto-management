@@ -18,6 +18,21 @@ import {
 } from '../../../../redux/order/actions'
 import useDebounce from '../../../../utils/hooks/useDebounce'
 
+const STATUS = {
+  DONE: {
+    label: 'Done',
+    variant: 'success',
+  },
+  PRE_ORDER: {
+    label: 'Pre Order',
+    variant: 'default',
+  },
+  WORKING: {
+    label: 'Working',
+    variant: 'processing',
+  },
+}
+
 const ListOrder = () => {
   const dispatch = useDispatch()
   const [searchTerm, setSearchTerm] = useState('')
@@ -84,23 +99,27 @@ const ListOrder = () => {
         </div>
       </header>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-4">
         <Radio.Group
           className="me-6"
           onChange={handleStatusChange}
           optionType="button"
           options={[
             {
-              label: 'ALL',
+              label: 'All',
               value: 'ALL',
             },
             {
-              label: 'WORKING',
+              label: 'Working',
               value: 'WORKING',
             },
             {
-              label: 'DONE',
+              label: 'Done',
               value: 'DONE',
+            },
+            {
+              label: 'Pre Order',
+              value: 'PRE_ORDER',
             },
           ]}
         />
@@ -172,12 +191,15 @@ const ListOrder = () => {
           {
             title: 'Status',
             dataIndex: 'status',
-            render: (text) => (
-              <Badge
-                status={text === 'DONE' ? 'success' : 'processing'}
-                text={text}
-              />
-            ),
+            render: (value) => {
+              console.log(STATUS[value].variant)
+              return (
+                <Badge
+                  status={STATUS[value].variant}
+                  text={STATUS[value].label}
+                />
+              )
+            },
           },
           {
             title: 'Payment Status',

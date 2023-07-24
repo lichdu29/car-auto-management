@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const STATUS = { working: 'WORKING', done: 'DONE' }
+const STATUS = { working: 'WORKING', done: 'DONE', preOrder: 'PRE_ORDER' }
 const PAYMENTSTATUS = { paid: 'PAID', unpaid: 'UNPAID' }
 
 const orderSchema = new mongoose.Schema(

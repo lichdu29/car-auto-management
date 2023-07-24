@@ -1,0 +1,26 @@
+.scheduleLinkContainer {
+    /* style={{
+        height: '515px',
+        width: '1440px',
+        backgroundImage: `url(${Background})`
+    }} */
+    position: relative;
+    height: 515px;
+    width: 100wh;
+    overflow: hidden;
+}
+
+.scheduleLinkContainer::before {
+    content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+    
+	height: 100%;
+    box-sizing: border-box;
+    background-image: url(../../../public//ScheduleLink.png);
+    background-size: cover;
+    filter: invert(.3);
+    z-index: 0;
+}

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAllServiceThunk } from '../../../../redux/service/actions'
 import { Tabs } from 'antd'
 import { camelize } from '../../../../utils'
-import * as icons from '../../../.././assets/icons'
+import * as icons from '../../../../assets/icons'
 import TableService from './TableService'
 const Services = () => {
   const dispatch = useDispatch()

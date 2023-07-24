@@ -23,6 +23,7 @@ const orderSlice = createSlice({
     updateQuery: (state, { search }) => {
       state.search = search
     },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(getAllOrderThunk.pending, (state) => {
@@ -73,5 +74,5 @@ const orderSlice = createSlice({
     })
   },
 })
-export const { updateQuery } = orderSlice.actions
+export const { updateQuery, reset } = orderSlice.actions
 export default orderSlice

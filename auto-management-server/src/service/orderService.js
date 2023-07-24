@@ -1,7 +1,11 @@
 const Order = require('../models/Order')
 const Car = require('../models/Car')
 const Customer = require('../models/Customer')
-const { handleError, validateAndUpdateDocument } = require('../utils')
+const {
+  handleError,
+  validateAndUpdateDocument,
+  formatDate,
+} = require('../utils')
 
 const OrderService = {
   createOrder: async (req, res) => {
@@ -58,7 +62,7 @@ const OrderService = {
         { 'car.plateNumber': { $regex: search, $options: 'i' } },
         { 'customer.customerName': { $regex: search, $options: 'i' } },
       ],
-      status: status ? status : { $in: ['WORKING', 'DONE'] },
+      status: status ? status : { $in: ['WORKING', 'DONE', 'PRE_ORDER'] },
       'payment.paymentStatus': paymentStatus
         ? paymentStatus
         : { $in: ['PAID', 'UNPAID'] },
@@ -111,9 +115,17 @@ const OrderService = {
       }
 
       const excludedFields = ['customer', 'car']
+      if (req.body.endDate) {
+        req.body.endDate = formatDate(req.body.endDate)
+      }
+      if (req.body.startDate) {
+        req.body.startDate = formatDate(req.body.startDate)
+      }
       const updatedOrder = await validateAndUpdateDocument(
         order,
-        req.body,
+        {
+          ...req.body,
+        },
         excludedFields
       )
       res.json(updatedOrder)
@@ -149,6 +161,7 @@ const OrderService = {
         }
       )
     } catch (err) {
+      console.log(err)
       handleError(err, res, 'Failed to update order')
     }
   },

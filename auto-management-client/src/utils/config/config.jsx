@@ -3,6 +3,7 @@ import Services from '../../pages/Home/AutoManagement/Services/Services'
 import AdminServices from '../../pages/Home/AdminManagement/Services/Services'
 import {
   faCar,
+  faChartSimple,
   faFileInvoice,
   faGears,
   faScrewdriverWrench,
@@ -13,6 +14,7 @@ import Customer from '../../pages/Home/AutoManagement/Customers/Customers'
 import Orders from '../../pages/Home/AutoManagement/Orders/Orders'
 import Cars from '../../pages/Home/AutoManagement/Cars/Cars'
 import Accounts from '../../pages/Home/AdminManagement/Accounts/Accounts'
+import Statistics from '../../pages/Home/AdminManagement/Statistics/Statistics'
 
 export const menuConfig = [
   {
@@ -63,6 +65,12 @@ export const menuConfig = [
         component: AdminServices,
         icon: <FontAwesomeIcon icon={faGears} />,
       },
+      {
+        path: 'statistics',
+        name: 'Statistics',
+        component: Statistics,
+        icon: <FontAwesomeIcon icon={faChartSimple} />,
+      },
     ],
   },
 ]
@@ -75,6 +83,7 @@ export const mapPathToBreadcrumb = {
   orders: ' Orders',
   cars: ' Cars',
   accounts: ' Accounts',
+  statistics: ' Statistics',
   'create-new-customer': 'Create New Customer',
   payment: 'payment',
 }

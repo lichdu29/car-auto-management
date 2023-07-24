@@ -1,10 +1,23 @@
-import { faMoneyBills, faQrcode } from '@fortawesome/free-solid-svg-icons'
+import {
+  faMoneyBills,
+  faPrint,
+  faQrcode,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Col, Descriptions, Modal } from 'antd'
-import { Radio, Row, Spin, Table, Watermark } from 'antd'
+import {
+  Button,
+  Col,
+  Descriptions,
+  Modal,
+  Radio,
+  Row,
+  Spin,
+  Table,
+  Watermark,
+} from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
 import dayjs from 'dayjs'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router'
 import paymentService from '../../../../api/paymentService'
@@ -17,6 +30,7 @@ import {
   BANK_ACCOUNT_INFO,
   RATE_USD_TO_VND,
 } from '../../../../utils/constants/payment'
+import { useReactToPrint } from 'react-to-print'
 
 function OrderPayment() {
   const param = useParams()
@@ -26,8 +40,31 @@ function OrderPayment() {
   const [isOpen, setIsOpen] = useState(false)
   const [qrDataURL, setQrDataURL] = useState('')
   const [qrCodeLoading, setQrCodeLoading] = useState(false)
+  const [isPrintingStyle, setIsPrintingStyle] = useState(false)
 
+  const printComponentRef = useRef(null)
+  const promissResolveRef = useRef(null)
   const { orderDetail } = useSelector((state) => state.order)
+
+  const handlePrint = useReactToPrint({
+    content: () => printComponentRef.current,
+    onBeforeGetContent: () => {
+      return new Promise((resolve) => {
+        promissResolveRef.current = resolve
+        setIsPrintingStyle(true)
+      })
+    },
+    onAfterPrint: () => {
+      promissResolveRef.current = null
+      setIsPrintingStyle(false)
+    },
+  })
+
+  useEffect(() => {
+    if (isPrintingStyle && promissResolveRef.current) {
+      promissResolveRef.current()
+    }
+  }, [isPrintingStyle])
 
   useEffect(() => {
     if (!param.id) return
@@ -167,7 +204,9 @@ function OrderPayment() {
             <Button key="submit" type="primary" onClick={handleOk}>
               Confirm
             </Button>,
-            <Button key="back">Cancel</Button>,
+            <Button key="back" onClick={() => setIsOpen(false)}>
+              Cancel
+            </Button>,
           ]}
         >
           <p>
@@ -182,12 +221,18 @@ function OrderPayment() {
               </div>
               <div className="col-12">
                 <Descriptions title="Bank account info" column={1} bordered>
-                  <Descriptions.Item label="Bank">TECHCOMBANK</Descriptions.Item>
+                  <Descriptions.Item label="Bank">
+                    {BANK_ACCOUNT_INFO.bankName}
+                  </Descriptions.Item>
                   <Descriptions.Item label="Account number">
-                    <Paragraph copyable>792188888888</Paragraph>
+                    <Paragraph copyable>
+                      {BANK_ACCOUNT_INFO.accountNo}
+                    </Paragraph>
                   </Descriptions.Item>
                   <Descriptions.Item label="Account name">
-                    <Paragraph copyable>PHAM VU VIET ANH</Paragraph>
+                    <Paragraph copyable>
+                      {BANK_ACCOUNT_INFO.accountName}
+                    </Paragraph>
                   </Descriptions.Item>
                   <Descriptions.Item label="Description">
                     <Paragraph copyable>
@@ -196,7 +241,10 @@ function OrderPayment() {
                   </Descriptions.Item>
                   <Descriptions.Item label="Amount">
                     ${orderDetail?.totalCost} ={' '}
-                    {orderDetail?.totalCost * RATE_USD_TO_VND} VND
+                    {(
+                      orderDetail?.totalCost * RATE_USD_TO_VND
+                    ).toLocaleString()}{' '}
+                    VND
                   </Descriptions.Item>
                 </Descriptions>
               </div>
@@ -211,72 +259,89 @@ function OrderPayment() {
           )}
         </Modal>
       </Col>
-      <Col span={15} className="p-6 ">
-        <Watermark
-          font={{ color: 'rgba(0,0,0,.1)' }}
-          content={['Best Shop', 'Quality Seputation']}
+      <Col span={15} className="p-6 flex flex-col">
+        <Button
+          type="ghost"
+          onClick={handlePrint}
+          className="font-medium text-lg mb-2 ml-auto"
         >
-          <div className="px-16 py-8 rounded border border-solid border-blue-500">
-            <h2 className="text-center font-bold text-2xl">BEST SHOP</h2>
-            <div className="my-4">
-              <h2 className="font-bold">Order Info</h2>
-              {orderDetail && (
-                <ul className="list-none text-[16px] ps-0">
-                  <li>
-                    Order number: <span className="">{orderDetail._id}</span>
-                  </li>
-                  <li>
-                    Customer name:{' '}
-                    <span className="font-semibold">
-                      {orderDetail.customer.customerName}
-                    </span>
-                  </li>
-                  <li>
-                    Car:{' '}
-                    <span className="font-semibold">
-                      {orderDetail.car.plateNumber}
-                    </span>
-                  </li>
-                  <li>
-                    Date:{' '}
-                    <span className="">
-                      {dayjs().format('MMM DD, YYYY HH:mm:ss')}
-                    </span>
-                  </li>
-                </ul>
-              )}
-            </div>
-            <Table
-              className="border rounded-xl border-solid border-gray-200"
-              rowKey={(row) => row._id}
-              // rowClassName={(record, index) => index === 0 && 'bg-blue-300'}
-              columns={[
-                {
-                  title: 'Description',
-                  dataIndex: 'name',
-                  render: (text) => <span>{text}</span>,
-                },
-                {
-                  title: 'Price',
-                  dataIndex: 'cost',
-                  render: (text) => <span>${text}</span>,
-                },
-              ]}
-              dataSource={orderDetail?.services}
-              summary={() => (
-                <Table.Summary.Row className="font-bold">
-                  <Table.Summary.Cell index={0} className="font-medium">
-                    Total
-                  </Table.Summary.Cell>
-                  <Table.Summary.Cell index={1}>
-                    <span type="danger">${orderDetail?.totalCost}</span>
-                  </Table.Summary.Cell>
-                </Table.Summary.Row>
-              )}
-              pagination={false}
-            ></Table>
+          Print
+          <FontAwesomeIcon icon={faPrint} className="ml-2" />
+        </Button>
+        <div className=" rounded border border-solid border-blue-500">
+          <div ref={printComponentRef}>
+            <Watermark
+              font={{ color: 'rgba(0,0,0,.1)' }}
+              content={['Best Shop', 'Quality Seputation']}
+            >
+              <div
+                className={`pl-16 py-12 pr-8 ${
+                  isPrintingStyle && 'h-[1030px]'
+                }`}
+              >
+                <h2 className="text-center font-bold text-2xl">BEST SHOP</h2>
+                <div className="my-4">
+                  <h2 className="font-bold">Order Info</h2>
+                  {orderDetail && (
+                    <ul className="list-none text-[16px] ps-0">
+                      <li>
+                        Order number:{' '}
+                        <span className="">{orderDetail._id}</span>
+                      </li>
+                      <li>
+                        Customer name:{' '}
+                        <span className="font-semibold">
+                          {orderDetail.customer.customerName}
+                        </span>
+                      </li>
+                      <li>
+                        Car:{' '}
+                        <span className="font-semibold">
+                          {orderDetail.car.plateNumber}
+                        </span>
+                      </li>
+                      <li>
+                        Date:{' '}
+                        <span className="">
+                          {dayjs().format('MMM DD, YYYY HH:mm:ss')}
+                        </span>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+                <Table
+                  className="border rounded-xl border-solid border-gray-200"
+                  rowKey={(row) => row._id}
+                  // rowClassName={(record, index) => index === 0 && 'bg-blue-300'}
+                  columns={[
+                    {
+                      title: 'Description',
+                      dataIndex: 'name',
+                      render: (text) => <span>{text}</span>,
+                    },
+                    {
+                      title: 'Price',
+                      dataIndex: 'cost',
+                      render: (text) => <span>${text}</span>,
+                    },
+                  ]}
+                  dataSource={orderDetail?.services}
+                  summary={() => (
+                    <Table.Summary.Row className="font-bold">
+                      <Table.Summary.Cell index={0} className="font-medium">
+                        Total
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={1}>
+                        <span type="danger">${orderDetail?.totalCost}</span>
+                      </Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  )}
+                  pagination={false}
+                ></Table>
+              </div>
+            </Watermark>
           </div>
-        </Watermark>
+        </div>
       </Col>
     </Row>
   )

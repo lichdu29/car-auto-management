@@ -1,0 +1,15 @@
+.review-container {
+    height: 732px;
+    background-color: #F3F5FF;
+    display:flex;
+    width: 100wh;
+    flex-direction: column;
+}
+
+@font-face {
+    font-family: 'SVN-Gilroy';
+    src: url('../../assets/fonts/SVNGilroy\ Bold.woff') format('woff'),
+         url('../../assets/fonts/SVNGilroy\ Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }

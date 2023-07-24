@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import NotFound from '../../../../components/NotFound/NotFound'
 import { getOrderDetails } from '../../../../redux/order/actions'
 import OrderForm from './OrderForm'
+const TIME_FORMAT = 'YYYY-MM-DD HH:mm'
 
 const OrderDetail = () => {
   const { id } = useParams()
@@ -28,9 +29,9 @@ const OrderDetail = () => {
       label: orderDetail?.car.plateNumber,
       value: orderDetail?.car.carId,
     }
-    const startDate = dayjs(orderDetail?.startDate, 'YYYY-MM-DD')
+    const startDate = dayjs(orderDetail?.startDate, TIME_FORMAT)
     const endDate = orderDetail?.endDate
-      ? dayjs(orderDetail.endDate, 'YYYY-MM-DD')
+      ? dayjs(orderDetail.endDate, TIME_FORMAT)
       : null
     const services = orderDetail?.services.map((service) => ({
       value: service.cost,

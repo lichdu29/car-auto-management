@@ -1,0 +1,10 @@
+.reason-container {
+    height: 684px;
+    background-color: #9fabe7;
+    display:flex;
+    width: 100wh;
+    flex-direction: column;
+    /* background-image: ; */
+    background-image: url('../../../public/car.png');
+    background-size: cover;
+}
