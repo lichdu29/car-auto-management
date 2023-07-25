@@ -10,6 +10,10 @@ class ScheduleController {
   async list(req, res, next) {
     return ScheduleService.getAllSchedules(req, res, next)
   }
+
+  async update(req, res, next) {
+    return ScheduleService.updateSchedule(req, res, next)
+  }
 }
 
 module.exports = new ScheduleController()
