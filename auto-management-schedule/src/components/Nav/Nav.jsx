@@ -8,12 +8,12 @@ const Navbar = () => {
     <div className="header-navbar">
       <div
         style={{
-          backgroundColor: "#f2cc63",
+          backgroundColor: "#E7F0FE",
           borderBottomRightRadius: "20px",
           // padding: '10px'
         }}
       >
-        <img src={logoUrl} width={140} height={56} />
+        <img src={logoUrl} width={145} height={56} />
       </div>
       <div>
         <ul
@@ -21,7 +21,7 @@ const Navbar = () => {
             display: "flex",
             justifyContent: "space-betwwen",
             listStyleType: "none",
-            gap: "20px",
+            gap: "40px",
             fontSize: "16px",
             padding: "0",
             textDecoration: "none",
@@ -32,6 +32,7 @@ const Navbar = () => {
             style={{
               textDecoration: "none",
               color: "black",
+              fontSize: "20px",
             }}
             to="/"
           >
@@ -41,10 +42,21 @@ const Navbar = () => {
             style={{
               textDecoration: "none",
               color: "black",
+              fontSize: "20px",
             }}
             to="/schedule"
           >
             <li>Schedule</li>
+          </Link>
+          <Link
+            style={{
+              textDecoration: "none",
+              color: "black",
+              fontSize: "20px",
+            }}
+            to="/about-us"
+          >
+            <li>About us</li>
           </Link>
         </ul>
       </div>
@@ -53,6 +65,7 @@ const Navbar = () => {
           display: "flex",
           gap: "10px",
           fontWeight: "550",
+          marginRight: '20px'
         }}
       >
         <PhoneOutlined rotate={90} />

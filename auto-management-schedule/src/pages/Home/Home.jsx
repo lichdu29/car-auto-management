@@ -6,6 +6,7 @@ import ScheduleForm from '../../components/ScheduleForm/ScheduleForm'
 import Reason from '../../components/Reason/Reason'
 import Review from '../../components/Review/Review'
 import ScheduleLink from '../../components/ScheduleForm/ScheuleLink'
+import Footer from '../../components/Footer/Footer'
 
 const Home = () => {
     return (
@@ -17,6 +18,7 @@ const Home = () => {
             <ScheduleForm/> */}
             <Review/>
             <ScheduleLink/>
+            <Footer/>
         </div>
     )
 }

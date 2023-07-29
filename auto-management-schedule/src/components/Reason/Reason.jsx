@@ -1,5 +1,9 @@
 import { Image } from "antd";
 import "./Reason.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+faCalendarXmark, faCoins, faTools, faClock
+} from "@fortawesome/free-solid-svg-icons";
 // import antd from ''
 
 const Reason = () => {
@@ -30,6 +34,9 @@ const Reason = () => {
             width: "696px",
             marginTop: '80px',
             marginLeft: '80px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '25px'
           }
         }
       >
@@ -43,10 +50,14 @@ const Reason = () => {
               padding: "10px",
               width: "320px",
               height: "136px",
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
             }}
           >
-            <div>Free to check your car</div>
-            <p>
+            <FontAwesomeIcon icon={faCalendarXmark} style={{width: '20px'}}/>
+            <div style={{fontWeight: '600', fontSize: '16px', lineHeight: '24px'}}>Free to check your car</div>
+            <p style = {{margin: '0', fontSize: '14px', lineHeight:'20px'}}>
               You don't have to pay service fee when you check your car's
               condition before repare with our service
             </p>
@@ -56,10 +67,14 @@ const Reason = () => {
               padding: "10px",
               width: "320px",
               height: "136px",
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
             }}
           >
-            <div>Free to check your car</div>
-            <p>
+            <FontAwesomeIcon icon={faCoins} style={{width: '20px'}}/>
+            <div style={{fontWeight: '600', fontSize: '16px', lineHeight: '24px'}}>Free to check your car</div>
+            <p style = {{margin: '0', fontSize: '14px', lineHeight:'20px'}}>
               You don't have to pay service fee when you check your car's
               condition before repare with our service
             </p>
@@ -73,13 +88,16 @@ const Reason = () => {
           <div
             style={{
               padding: "10px",
-
               width: "320px",
               height: "136px",
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
             }}
           >
-            <div>Free to check your car</div>
-            <p>
+            <FontAwesomeIcon icon={faTools} style={{width: '20px'}}/>
+            <div style={{fontWeight: '600', fontSize: '16px', lineHeight: '24px'}}>Free to check your car</div>
+            <p style = {{margin: '0', fontSize: '14px', lineHeight:'20px'}}>
               You don't have to pay service fee when you check your car's
               condition before repare with our service
             </p>
@@ -87,13 +105,16 @@ const Reason = () => {
           <div
             style={{
               padding: "10px",
-
               width: "320px",
               height: "136px",
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '20px',
             }}
           >
-            <div>Free to check your car</div>
-            <p>
+            <FontAwesomeIcon icon={faClock} style={{width: '20px'}}/>
+            <div style={{fontWeight: '600', fontSize: '16px', lineHeight: '24px'}}>Free to check your car</div>
+            <p style = {{margin: '0', fontSize: '14px', lineHeight:'20px'}}>
               You don't have to pay service fee when you check your car's
               condition before repare with our service
             </p>

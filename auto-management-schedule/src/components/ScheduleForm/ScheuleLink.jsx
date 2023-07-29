@@ -36,9 +36,13 @@ const ScheduleLink = () => {
           <Link to="/schedule">
             <Button
               style={{
-                background: "yellow",
+                background: "#F8BF13",
                 color: "black",
                 textAlign: "center",
+                borderColor:'#F8BF13',
+                borderRadius: '8px',
+                height: '56px',
+                width: '400px'
               }}
             >
               Schedule For Free Immediately !

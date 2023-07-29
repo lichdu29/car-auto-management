@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ScheduleForm from "../../components/ScheduleForm/ScheduleForm";
 import Navbar from "../../components/Nav/Nav";
+import Footer from "../../components/Footer/Footer";
 
 const Schedule = () => {
   const [events, setEvents] = useState([]);
@@ -39,6 +40,7 @@ const Schedule = () => {
       />
     </div>
     <ScheduleForm/>
+    <Footer/>
     </>
   );
 };

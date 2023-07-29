@@ -1,0 +1,66 @@
+.about-container {
+    height: auto;
+}
+
+.about-fcomp-container {
+
+}
+
+.about-fcomp-container {
+    /* style={{
+        height: '515px',
+        width: '1440px',
+        backgroundImage: `url(${Background})`
+    }} */
+    position: relative;
+    height: 376px;
+    width: 100wh;
+    overflow: hidden;
+}
+
+.about-fcomp-container::before {
+    content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100%;
+    box-sizing: border-box;
+    background-image: url(../../../public//BannerAbout.png);
+    background-size: cover;
+    z-index: 0;
+}
+
+.about-scomp-container {
+    height: 1100px;
+    width: 100wh;
+    background-color: #F3F5FF ;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.about-tcomp-container {
+    height: 606px;
+    background-color: white;
+    display:flex;
+    width: 100wh;
+    flex-direction: column;
+}
+
+.about-4comp-container {
+    height: 500px;
+    background-color: #F3F5FF;
+    display:flex;
+    width: 100wh;
+    flex-direction: column;
+}
+
+.about-5comp-container {
+    height: 1146px;
+    background-color: white;
+    display:flex;
+    width: 100wh;
+    flex-direction: column;
+    justify-content: center;
+}

@@ -21,6 +21,6 @@
     box-sizing: border-box;
     background-image: url(../../../public//ScheduleLink.png);
     background-size: cover;
-    filter: invert(.3);
+    filter: brightness(0.3);
     z-index: 0;
 }
