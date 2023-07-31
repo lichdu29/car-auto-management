@@ -27,7 +27,7 @@ const scheduleService = {
     }
   },
   updateSchedule: async (req, res) => {
-    const { scheduleId } = req.params;
+    const scheduleId  = req.params.id;
     const { dateTimePicker, fullname, phoneNumber } = req.body;
 
     try {
@@ -45,6 +45,18 @@ const scheduleService = {
       res.status(200).json(updatedSchedule);
     } catch (error) {
       handleError(error, res, 'Failed to update schedule');
+    }
+  },
+  deleteSchedule: async (req, res) => {
+    const scheduleId = req.params.id
+    try {
+      const deletedSchedule = await Schedule.findByIdAndDelete(scheduleId)
+      if (!deletedSchedule) {
+        return res.status(404).json({ message: 'Schedule not found' })
+      }
+      res.json({ message: 'Schedule deleted successfully' })
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to delete schedule' })
     }
   },
 

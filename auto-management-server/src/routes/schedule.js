@@ -7,5 +7,6 @@ const route = express.Router()
 
 route.post('/', scheduleController.create)
 route.get('/', scheduleController.list)
-route.put('/', scheduleController.update)
+route.put('/:id', scheduleController.update)
+route.delete('/:id', scheduleController.delete)
 module.exports = route

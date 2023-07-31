@@ -33,6 +33,7 @@ const Navbar = () => {
               textDecoration: "none",
               color: "black",
               fontSize: "20px",
+              cursor: 'pointer'
             }}
             to="/"
           >
@@ -43,6 +44,7 @@ const Navbar = () => {
               textDecoration: "none",
               color: "black",
               fontSize: "20px",
+              cursor: 'pointer'
             }}
             to="/schedule"
           >
@@ -53,6 +55,7 @@ const Navbar = () => {
               textDecoration: "none",
               color: "black",
               fontSize: "20px",
+              cursor: 'pointer'
             }}
             to="/about-us"
           >

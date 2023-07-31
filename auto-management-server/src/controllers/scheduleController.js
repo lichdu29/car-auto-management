@@ -14,6 +14,10 @@ class ScheduleController {
   async update(req, res, next) {
     return ScheduleService.updateSchedule(req, res, next)
   }
+
+  async delete(req, res, next) {
+    return ScheduleService.deleteSchedule(req, res, next)
+  }
 }
 
 module.exports = new ScheduleController()

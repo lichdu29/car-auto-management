@@ -9,12 +9,14 @@ import {
   faScrewdriverWrench,
   faUserGear,
   faUsers,
+  faCalendar
 } from '@fortawesome/free-solid-svg-icons'
 import Customer from '../../pages/Home/AutoManagement/Customers/Customers'
 import Orders from '../../pages/Home/AutoManagement/Orders/Orders'
 import Cars from '../../pages/Home/AutoManagement/Cars/Cars'
 import Accounts from '../../pages/Home/AdminManagement/Accounts/Accounts'
 import Statistics from '../../pages/Home/AdminManagement/Statistics/Statistics'
+import {Schedule}  from '../../pages/Schedule/Schedule'
 
 export const menuConfig = [
   {
@@ -45,6 +47,12 @@ export const menuConfig = [
         name: 'Cars',
         component: Cars,
         icon: <FontAwesomeIcon icon={faCar} />,
+      },
+      {
+        path: 'schedule',
+        name: 'Schedule',
+        component: Schedule,
+        icon: <FontAwesomeIcon icon={faCalendar} />,
       },
     ],
   },

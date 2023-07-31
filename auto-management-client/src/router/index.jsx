@@ -1,5 +1,7 @@
 import Home from '../pages/Home/Home'
-import LogIn from '../pages/LogIn/LogIn'
+import LogIn from '../pages/Login/Login'
+// import { Home as HomeSchedule, Schedule } from '../pages/Schedule/Schedule'
+import { Schedule } from '../pages/Schedule/Schedule'
 import { menuConfig } from '../utils/config/config'
 import PrivateRoute from './PrivateRoute'
 
@@ -33,4 +35,14 @@ export const routes = [
       }
     }),
   })),
+  // {
+  //   path: '/client',
+  //   exact: true,
+  //   element: <HomeSchedule />,
+  // },
+  {
+    path: '/client/schedule',
+    exact: true,
+    element: <Schedule />,
+  },
 ]
