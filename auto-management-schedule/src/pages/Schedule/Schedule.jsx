@@ -31,7 +31,7 @@ const Schedule = () => {
   return (
     <>
     <Navbar/>
-    <div style={{ height: "90vh", marginTop: '50px', marginBottom: '50px'}}>
+    <div style={{ height: "80vh", marginTop: '50px', marginBottom: '50px'}}>
       <Calendar
         localizer={localizer}
         events={events}
