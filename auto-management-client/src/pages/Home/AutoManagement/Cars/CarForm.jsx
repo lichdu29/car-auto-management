@@ -199,30 +199,6 @@ const CarForm = ({ type = 'create', carDetail }) => {
         </Form.Item>
       )}
 
-      {type === 'create' ? (
-        <>
-          <Form.Item
-            name="isRepaired"
-            valuePropName="checked"
-            wrapperCol={{
-              span: 16,
-            }}
-          >
-            <Checkbox>Repaired</Checkbox>
-          </Form.Item>
-
-          <Form.Item
-            name="isAtWorkShop"
-            valuePropName="checked"
-            wrapperCol={{
-              span: 16,
-            }}
-          >
-            <Checkbox>At Work Shop</Checkbox>
-          </Form.Item>
-        </>
-      ) : null}
-
       <Form.Item
         wrapperCol={{
           ...layout.wrapperCol,

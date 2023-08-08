@@ -1,9 +1,9 @@
-import React from "react";
-import { Button, DatePicker, Form, Input } from "antd";
-import { useState } from "react";
-import axios from "axios";
-import moment from "moment";
-const { RangePicker } = DatePicker;
+import React from 'react'
+import { Button, DatePicker, Form, Input, notification } from 'antd'
+import { useState } from 'react'
+import axios from 'axios'
+// import moment from 'moment'
+const { RangePicker } = DatePicker
 
 const formItemLayout = {
   labelCol: {
@@ -14,39 +14,43 @@ const formItemLayout = {
     xs: { span: 24 },
     sm: { span: 16 },
   },
-};
+}
 
 const config = {
-  rules: [{ type: "object", required: true, message: "Please select time!" }],
-};
+  rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+}
 
 const rangeConfig = {
-  rules: [{ type: "array", required: true, message: "Please select time!" }],
-};
+  rules: [{ type: 'array', required: true, message: 'Please select time!' }],
+}
 
 const ScheduleForm = () => {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState(false)
   const disabledDate = (current) => {
     // Disable weekends (Saturday and Sunday)
-    return current && (current.day() === 0 || current.day() === 6);
-  };
+    return current && (current.day() === 0 || current.day() === 6)
+  }
 
   const disabledDateTime = () => {
     // Set the disabled time range (e.g., 8:00 AM to 6:00 PM)
-    const disabledStart = new Date();
-    disabledStart.setHours(18, 0, 0); // 6:00 PM
-
-    const disabledEnd = new Date();
-    disabledEnd.setHours(8, 0, 0); // 8:00 AM
-
+    const disabledStart = new Date()
+    disabledStart.setHours(18, 0, 0) // 6:00 PM
+  
+    const disabledEnd = new Date()
+    disabledEnd.setHours(8, 0, 0) // 8:00 AM
+  
     return {
       disabledHours: () => {
         // Disable hours outside the range (before 8:00 AM and after 6:00 PM)
         return Array.from({ length: 24 }, (_, hour) => hour).filter(
-          (hour) =>
-            hour < disabledEnd.getHours() || hour > disabledStart.getHours()
-        );
+          (hour) => hour < disabledEnd.getHours() || hour > disabledStart.getHours()
+        )
+      },
+      disabledMinutes: (hour) => {
+        // Disable minutes for all hours
+        // You can adjust this to allow specific minutes if needed
+        return Array.from({ length: 60 }, (_, minute) => minute).filter((minute) => minute !== 0);
       },
     };
   };
@@ -54,35 +58,47 @@ const ScheduleForm = () => {
   const onFinish = async (fieldsValue) => {
     try {
       setLoading(true);
-      //   const rangeValue = fieldsValue["range-picker"];
-      //   const rangeTimeValue = fieldsValue["range-time-picker"];
+      const dateTimePicker = fieldsValue['date-time-picker']
+        ? fieldsValue['date-time-picker'].startOf('hour').format('YYYY-MM-DD HH:mm')
+        : '';
       const values = {
         ...fieldsValue,
-        dateTimePicker:
-          fieldsValue["date-time-picker"].format("YYYY-MM-DD HH:mm"),
-        fullname: fieldsValue["fullname"],
-        phoneNumber: fieldsValue["phone-number"],
+        dateTimePicker: fieldsValue['date-time-picker'].format('YYYY-MM-DD HH:mm'),
+        fullname: fieldsValue['fullname'],
+        phoneNumber: fieldsValue['phone-number'],
       };
-      console.log(values);
+  
       // Make the API call to submit the form data
-      const response = await axios.post(
-        "http://localhost:3002/api/schedule/",
-        values
-      );
-
+      const response = await axios.post('http://localhost:3002/api/schedule/', values);
+  
       if (response.status === 200) {
-        console.log("Form submitted successfully");
+        console.log('Form submitted successfully');
+        // Show success notification
+        notification.success({
+          message: 'Success',
+          description: 'Form submitted successfully!',
+        });
         // Reset the form fields after successful submission
         form.resetFields();
       } else {
-        console.error("Failed to submit form");
+        console.error('Failed to submit form');
+        // Show error notification
+        notification.error({
+          message: 'Error',
+          description: 'Failed to submit form!',
+        });
       }
     } catch (error) {
-      console.error("Error while submitting form:", error);
+      console.error('Error while submitting form:', error);
+      // Show error notification
+      notification.error({
+        message: 'Error',
+        description: error.response.data.message,
+      });
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
     <Form
@@ -90,7 +106,7 @@ const ScheduleForm = () => {
       form={form}
       name="time_related_controls"
       onFinish={onFinish}
-      style={{ maxWidth: "700px", margin: "0 auto" }}
+      style={{ maxWidth: '700px', margin: '0 auto' }}
     >
       <Form.Item
         name="date-time-picker"
@@ -108,10 +124,10 @@ const ScheduleForm = () => {
         label="Your full name"
         name="fullname"
         rules={[
-          { required: true, message: "Please enter your Username!" },
+          { required: true, message: 'Please enter your Username!' },
           {
             min: 6,
-            message: "The full name must be at least 6 characters",
+            message: 'The full name must be at least 6 characters',
           },
         ]}
       >
@@ -121,11 +137,11 @@ const ScheduleForm = () => {
         label="Your phone number"
         name="phone-number"
         rules={[
-          { required: true, message: "Please enter your Username!" },
+          { required: true, message: 'Please enter your Username!' },
           {
             min: 10,
             max: 11,
-            message: "The username must be at least 10 characters",
+            message: 'The username must be at least 10 characters',
           },
         ]}
       >
@@ -137,19 +153,12 @@ const ScheduleForm = () => {
           sm: { span: 16, offset: 8 },
         }}
       >
-        <Button
-          style={{
-            cursor: "pointer",
-          }}
-          type="primary"
-          htmlType="submit"
-          loading={loading}
-        >
+        <Button type="primary" htmlType="submit" loading={loading}>
           Submit
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default ScheduleForm;
+export default ScheduleForm

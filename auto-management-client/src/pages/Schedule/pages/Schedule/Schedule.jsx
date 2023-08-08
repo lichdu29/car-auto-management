@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import axios from 'axios'
-import { Modal, Form, DatePicker, Input, Button } from 'antd'
+import { Modal, Form, DatePicker, Input, Button, notification } from 'antd'
 import ScheduleForm from '../../components/ScheduleForm/ScheduleForm'
 
 const Schedule = () => {
@@ -20,20 +20,25 @@ const Schedule = () => {
     // Set the disabled time range (e.g., 8:00 AM to 6:00 PM)
     const disabledStart = new Date()
     disabledStart.setHours(18, 0, 0) // 6:00 PM
-
+  
     const disabledEnd = new Date()
     disabledEnd.setHours(8, 0, 0) // 8:00 AM
-
+  
     return {
       disabledHours: () => {
         // Disable hours outside the range (before 8:00 AM and after 6:00 PM)
         return Array.from({ length: 24 }, (_, hour) => hour).filter(
-          (hour) =>
-            hour < disabledEnd.getHours() || hour > disabledStart.getHours()
+          (hour) => hour < disabledEnd.getHours() || hour > disabledStart.getHours()
         )
       },
-    }
-  }
+      disabledMinutes: (hour) => {
+        // Disable minutes for all hours
+        // You can adjust this to allow specific minutes if needed
+        return Array.from({ length: 60 }, (_, minute) => minute).filter((minute) => minute !== 0);
+      },
+    };
+  };
+
   const config = {
     rules: [{ type: 'object', required: true, message: 'Please select time!' }],
   }
@@ -48,28 +53,29 @@ const Schedule = () => {
     },
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get('http://localhost:3002/api/schedule/')
-      const transformedEvents = response.data.map((item) => {
-        const id = item._id
-        const start = moment(item.dateTimePicker).toDate()
-        const end = moment(start.getTime() + 60 * 60 * 1000).toDate() // Adding 1 hour
-        const title = `${item.fullname} ${item.phoneNumber}`
-        const name = item.fullname
-        const phone = item.phoneNumber
+  const fetchData = async () => {
+    const response = await axios.get('http://localhost:3002/api/schedule/')
+    const transformedEvents = response.data.map((item) => {
+      const id = item._id
+      const start = moment(item.dateTimePicker).toDate()
+      const end = moment(start.getTime() + 60 * 60 * 1000).toDate() // Adding 1 hour
+      const title = `${item.fullname} ${item.phoneNumber}`
+      const name = item.fullname
+      const phone = item.phoneNumber
 
-        return {
-          id,
-          start,
-          end,
-          title,
-          name,
-          phone,
-        }
-      })
-      setEvents(transformedEvents)
-    }
+      return {
+        id,
+        start,
+        end,
+        title,
+        name,
+        phone,
+      }
+    })
+    setEvents(transformedEvents)
+  }
+
+  useEffect(() => {
     fetchData()
   }, [<ScheduleForm />, form])
 
@@ -97,21 +103,30 @@ const Schedule = () => {
       // Handle form submission here
       const values = {
         ...fieldsValue,
-        dateTimePicker: fieldsValue['date-time-picker'].toDate(), // Convert moment object to Date
+        dateTimePicker: fieldsValue['date-time-picker'].format('YYYY-MM-DD HH:mm'), // Convert moment object to Date
         fullname: fieldsValue['fullname'],
         phoneNumber: fieldsValue['phone-number'],
       };
   
       // Send a PUT request to update the event with the new information
       await axios.put(`http://localhost:3002/api/schedule/${selectedEvent.id}`, values);
-  
+      notification.success({
+        message: 'Event Updated',
+        description: 'Schedule has been updated successfully.',
+      });
       setModalVisible(false);
   
       // Fetch the updated data to refresh the events in the calendar
       fetchData();
+  
+      // Show success notification
     } catch (error) {
       console.error('Error updating event:', error);
-      // Handle error, show error message, etc.
+      // Handle error, show error message.
+      notification.error({
+        message: 'Error',
+        description: error.response.data.message,
+      });
     }
   };
 
@@ -122,7 +137,7 @@ const Schedule = () => {
       setModalVisible(false);
     } catch (error) {
       console.error('Error delete event:', error);
-      // Handle error, show error message, etc.
+      // Handle error, show error message.
     }
   };
 

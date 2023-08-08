@@ -111,6 +111,7 @@ function OrderPayment() {
         data: {
           payment: {
             paymentStatus: 'PAID',
+            paymentMethod: paymentMethodValue.toUpperCase(),
             payAtTime: dayjs().format('YYYY-MM-DD'),
           },
         },

@@ -51,7 +51,6 @@ const AuthService = {
       // create and assign access token and refresh token
       const accessToken = AuthService.generateAccessToken(exitedUser)
       const refeshToken = AuthService.generateRefeshToken(exitedUser)
-
       res.json({
         message: 'Login successful',
         accessToken,

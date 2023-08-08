@@ -1,8 +1,8 @@
 import React from 'react'
-import { Button, DatePicker, Form, Input } from 'antd'
+import { Button, DatePicker, Form, Input, notification } from 'antd'
 import { useState } from 'react'
 import axios from 'axios'
-import moment from 'moment'
+// import moment from 'moment'
 const { RangePicker } = DatePicker
 
 const formItemLayout = {
@@ -36,51 +36,67 @@ const ScheduleForm = () => {
     // Set the disabled time range (e.g., 8:00 AM to 6:00 PM)
     const disabledStart = new Date()
     disabledStart.setHours(18, 0, 0) // 6:00 PM
-
+  
     const disabledEnd = new Date()
     disabledEnd.setHours(8, 0, 0) // 8:00 AM
-
+  
     return {
       disabledHours: () => {
         // Disable hours outside the range (before 8:00 AM and after 6:00 PM)
         return Array.from({ length: 24 }, (_, hour) => hour).filter(
-          (hour) =>
-            hour < disabledEnd.getHours() || hour > disabledStart.getHours()
+          (hour) => hour < disabledEnd.getHours() || hour > disabledStart.getHours()
         )
       },
-    }
-  }
+      disabledMinutes: (hour) => {
+        // Disable minutes for all hours
+        // You can adjust this to allow specific minutes if needed
+        return Array.from({ length: 60 }, (_, minute) => minute).filter((minute) => minute !== 0);
+      },
+    };
+  };
 
   const onFinish = async (fieldsValue) => {
     try {
-      setLoading(true)
-      //   const rangeValue = fieldsValue["range-picker"];
-      //   const rangeTimeValue = fieldsValue["range-time-picker"];
+      setLoading(true);
+      const dateTimePicker = fieldsValue['date-time-picker']
+        ? fieldsValue['date-time-picker'].startOf('hour').format('YYYY-MM-DD HH:mm')
+        : '';
       const values = {
         ...fieldsValue,
-        dateTimePicker:
-          fieldsValue['date-time-picker'].format('YYYY-MM-DD HH:mm'),
+        dateTimePicker: fieldsValue['date-time-picker'].format('YYYY-MM-DD HH:mm'),
         fullname: fieldsValue['fullname'],
         phoneNumber: fieldsValue['phone-number'],
-      }
-      console.log(values)
+      };
+  
       // Make the API call to submit the form data
-      const response = await axios.post(
-        'http://localhost:3002/api/schedule/',
-        values
-      )
-
+      const response = await axios.post('http://localhost:3002/api/schedule/', values);
+  
       if (response.status === 200) {
-        console.log('Form submitted successfully')
+        console.log('Form submitted successfully');
+        // Show success notification
+        notification.success({
+          message: 'Success',
+          description: 'Form submitted successfully!',
+        });
         // Reset the form fields after successful submission
-        form.resetFields()
+        form.resetFields();
       } else {
-        console.error('Failed to submit form')
+        console.error('Failed to submit form');
+        // Show error notification
+        notification.error({
+          message: 'Error',
+          description: 'Failed to submit form!',
+        });
       }
     } catch (error) {
-      console.error('Error while submitting form:', error)
+      console.error('Error while submitting form:', error);
+      // Show error notification
+      notification.error({
+        message: 'Error',
+        description: error.response.data.message,
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 

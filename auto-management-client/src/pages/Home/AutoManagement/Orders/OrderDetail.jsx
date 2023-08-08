@@ -41,6 +41,7 @@ const OrderDetail = () => {
     const status = orderDetail?.status
     const name = orderDetail?.name
     const payment = orderDetail?.payment.paymentStatus
+    const paymentMethod = orderDetail?.payment.paymentMethod
     return {
       customer,
       car,
@@ -50,6 +51,7 @@ const OrderDetail = () => {
       status,
       name,
       payment,
+      paymentMethod
     }
   }, [orderDetail])
 

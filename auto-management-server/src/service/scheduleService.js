@@ -5,13 +5,27 @@ const scheduleService = {
   createSchedule: async (req, res) => {
     const {dateTimePicker, fullname, phoneNumber} = req.body
     try {
+      // Check if there are already two schedules with the requested time
+      const existingSchedules = await Schedule.find({
+        dateTimePicker,
+      });
+
+      if (existingSchedules.length >= 2) {
+        return res
+          .status(400)
+          .json({ message: 'Maximum two schedules already exist at this time' });
+      }
+
       const newSchedule = new Schedule({
         dateTimePicker,
         fullname,
-        phoneNumber
+        phoneNumber,
       });
+
+      // Save the new schedule to the database
       const savedSchedule = await newSchedule.save();
-      res.status(200).json(savedSchedule)
+
+      res.status(200).json(savedSchedule);
     } catch (error) {
         console.log(error.message);
       handleError(error, res, "Failed to create schedule");
@@ -29,12 +43,19 @@ const scheduleService = {
   updateSchedule: async (req, res) => {
     const scheduleId  = req.params.id;
     const { dateTimePicker, fullname, phoneNumber } = req.body;
-
     try {
+      const existingSchedules = await Schedule.find({
+        dateTimePicker,
+      });
       const existingSchedule = await Schedule.findById(scheduleId);
 
       if (!existingSchedule) {
         return res.status(404).json({ message: 'Schedule not found' });
+      }
+      if (existingSchedules.length >= 2) {
+        return res
+          .status(400)
+          .json({ message: 'Maximum two schedules already exist at this time' });
       }
 
       existingSchedule.dateTimePicker = dateTimePicker;

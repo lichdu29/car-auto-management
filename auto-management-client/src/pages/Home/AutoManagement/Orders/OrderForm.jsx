@@ -169,6 +169,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
     const status = values.status
     const payment = {
       paymentStatus: values.payment,
+      paymentMethod: values.payment === 'UNPAID' ? null : values.paymentMethod,
       payAtTime: values.payment === 'PAID' ? dayjs().format(TIME_FORMAT) : null,
     }
     const data = {
@@ -199,6 +200,12 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           totalCost,
           payment,
         }
+        if (payment.paymentStatus === 'PAID' && payment.paymentMethod === null)
+        return notification.warning({
+          message:
+            'Invalid payment method. Please click the Payment button to proceed with the payment',
+        })
+
         dispatch(updateOrderThunk({ id: id, data: data }))
       }
     } catch (err) {
@@ -386,6 +393,20 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
             />
           </Form.Item>
         </Col>
+        <Col span={5}>
+          <Form.Item label="Payment Method" name="paymentMethod">
+            <Select
+              disabled
+              initialvalues={null}
+              options={[
+                { label: '', value: null },
+                { label: 'CASH', value: 'CASH' },
+                { label: 'BANKTRANSFER', value: 'BANKTRANSFER' },
+              ]}
+            />
+          </Form.Item>
+        </Col>
+
       </Row>
 
       <Form.Item

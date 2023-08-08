@@ -22,7 +22,7 @@ function LogIn() {
   const check = localStorage.getItem('_at')
 
   if (isLoading && check) return <Loading />
-  if (currentUser) return <Navigate to={state || '/'} />
+  if (currentUser) return <Navigate to={state || '/auto-management/services'} />
 
   return (
     <div className="flex justify-center h-[100vh] bg-slate-100">
