@@ -69,7 +69,7 @@ const ScheduleForm = () => {
       };
   
       // Make the API call to submit the form data
-      const response = await axios.post('http://localhost:3002/api/schedule/', values);
+      const response = await axios.post('http://65.108.79.164:4000/api/schedule/', values);
   
       if (response.status === 200) {
         console.log('Form submitted successfully');

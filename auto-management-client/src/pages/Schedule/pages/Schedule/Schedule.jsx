@@ -54,7 +54,7 @@ const Schedule = () => {
   }
 
   const fetchData = async () => {
-    const response = await axios.get('http://localhost:3002/api/schedule/')
+    const response = await axios.get('http://65.108.79.164:4000/api/schedule/')
     const transformedEvents = response.data.map((item) => {
       const id = item._id
       const start = moment(item.dateTimePicker).toDate()
@@ -109,7 +109,7 @@ const Schedule = () => {
       };
   
       // Send a PUT request to update the event with the new information
-      await axios.put(`http://localhost:3002/api/schedule/${selectedEvent.id}`, values);
+      await axios.put(`http://65.108.79.164:4000/api/schedule/${selectedEvent.id}`, values);
       notification.success({
         message: 'Event Updated',
         description: 'Schedule has been updated successfully.',
@@ -132,7 +132,7 @@ const Schedule = () => {
 
   const onDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3002/api/schedule/${selectedEvent.id}`);
+      await axios.delete(`http://65.108.79.164:4000/api/schedule/${selectedEvent.id}`);
   
       setModalVisible(false);
     } catch (error) {

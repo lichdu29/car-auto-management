@@ -11,7 +11,7 @@ const Schedule = () => {
   const [events, setEvents] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get("http://localhost:3002/api/schedule/");
+      const response = await axios.get("http://65.108.79.164:4000/api/schedule/");
       const transformedEvents = response.data.map((item) => {
         const start = moment(item.dateTimePicker).toDate();
         const end = moment(start.getTime() + 60 * 60 * 1000).toDate(); // Adding 1 hour
