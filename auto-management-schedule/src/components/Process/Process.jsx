@@ -1,6 +1,8 @@
 import { Image } from "antd";
 import "./Process.css";
-
+import Step1 from '../../assets/Illustration Card.png'
+import Step2 from '../../assets/Frame.png'
+import Step3 from '../../assets/Key.png'
 const Process = () => {
   return (
     <div className="process-container">
@@ -47,9 +49,10 @@ const Process = () => {
           }}
         >
           <Image
-            src="../../../public/Illustration Card.png"
+            src={Step1}
             height={80}
             width={80}
+            preview={false}
           />
           <div>1. Schedule for free</div>
           <p>
@@ -72,9 +75,10 @@ const Process = () => {
           }}
         >
           <Image
-            src="../../../public/Frame.png"
+            src={Step2}
             height={80}
             width={80}
+            preview={false}
           />
           <div>2. Check the status and receive the request</div>
           <p>
@@ -96,9 +100,10 @@ const Process = () => {
           }}
         >
           <Image
-            src="../../../public/Key.png"
+            src={Step3}
             height={80}
             width={80}
+            preview={false}
           />
           <div>3. Discharge</div>
           <p>

@@ -1,25 +1,28 @@
 import { Image } from "antd";
 import "./Review.css";
+import Customer1 from '../../assets/Customer1.png'
+import Customer2 from '../../assets/Customer2.png'
+import Customer3 from '../../assets/Customer3.png'
 
 const Review = () => {
   const data = [
     {
-      image: "path",
+      image: Customer1,
       name: "Nguyen Thinh",
       comment:
-        "Tôi có một trải nghiệm rất tuyệt tại OTOCITY, đội ngũ chuyên nghiệp giúp quá trình diễn ra được thuận lợi và nhanh chóng. Trước khi đến đây tôi đã đặt lịch trước nên không cần lo về thời gian...",
+        "Tôi có một trải nghiệm rất tuyệt tại BestStop, đội ngũ chuyên nghiệp giúp quá trình diễn ra được thuận lợi và nhanh chóng. Trước khi đến đây tôi đã đặt lịch trước nên không cần lo về thời gian...",
     },
     {
-      image: "path",
+      image: Customer2,
       name: "Quang Phat",
       comment:
-        "Tôi có một trải nghiệm rất tuyệt tại OTOCITY, đội ngũ chuyên nghiệp giúp quá trình diễn ra được thuận lợi và nhanh chóng. Trước khi đến đây tôi đã đặt lịch trước nên không cần lo về thời gian...",
+        "Tôi có một trải nghiệm rất tuyệt tại BestStop, đội ngũ chuyên nghiệp giúp quá trình diễn ra được thuận lợi và nhanh chóng. Trước khi đến đây tôi đã đặt lịch trước nên không cần lo về thời gian...",
     },
     {
-      image: "path",
+      image: Customer3,
       name: "Phuong Ho",
       comment:
-        "Tôi có một trải nghiệm rất tuyệt tại OTOCITY, đội ngũ chuyên nghiệp giúp quá trình diễn ra được thuận lợi và nhanh chóng. Trước khi đến đây tôi đã đặt lịch trước nên không cần lo về thời gian...",
+        "Tôi có một trải nghiệm rất tuyệt tại BestStop, đội ngũ chuyên nghiệp giúp quá trình diễn ra được thuận lợi và nhanh chóng. Trước khi đến đây tôi đã đặt lịch trước nên không cần lo về thời gian...",
     },
   ];
   return (
@@ -52,7 +55,7 @@ const Review = () => {
               backgroundColor: '#FFFFFF'
             }}
           >
-            <Image src="../../../public/Customer1.png" preview={false} />
+            <Image src={items.image} preview={false} />
             
             <div style={{
                 fontSize: '16px',

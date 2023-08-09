@@ -1,10 +1,10 @@
 import { Image } from "antd";
 import "./About.css";
-import Review1 from "../../../public/Review1.png";
-import Review2 from "../../../public/Review2.png";
-import QualityIcon from "../../../public/qualitycheckicon.png";
-import Standard1 from "../../../public/Standard1.png";
-import Standard2 from "../../../public/Standard2.png";
+import Review1 from "../../assets/Review1.png";
+import Review2 from "../../assets/Review2.png";
+import QualityIcon from "../../assets/qualitycheckicon.png";
+import Standard1 from "../../assets/Standard1.png";
+import Standard2 from "../../assets/Standard2.png";
 const About = () => {
   return (
     <div className="about-container">
@@ -77,13 +77,13 @@ const About = () => {
               lineHeight: "24px",
             }}
           >
-            Chúng tôi là xưởng sửa chữa xe chuyên nghiệp với đội ngũ kỹ thuật
-            viên giàu kinh nghiệm và đam mê xe hơi. Với hơn 15 năm hoạt động
-            trong ngành, chúng tôi tự tin cung cấp các dịch vụ bảo trì, sửa
-            chữa, và thay thế linh kiện chất lượng cao cho mọi loại xe. Đồng
-            hành cùng sứ mệnh đem đến sự an toàn và tiện nghi cho khách hàng,
-            chúng tôi cam kết sử dụng công nghệ hiện đại và dịch vụ chuyên
-            nghiệp để đáp ứng mọi yêu cầu của bạn và xe của bạn.
+            We are a professional car repair workshop with a team of experienced
+            and passionate technicians. With over 15 years of experience in the
+            industry, we are confident in providing high-quality maintenance,
+            repair, and replacement services for all types of vehicles. Aligned
+            with the mission to bring safety and convenience to our customers,
+            we are committed to using modern technology and professional
+            services to meet all your needs and those of your vehicle.
           </p>
           <Image
             style={{ borderRadius: "10px" }}
@@ -122,10 +122,10 @@ const About = () => {
               lineHeight: "24px",
             }}
           >
-            Chúng tôi mong muốn trở thành một xưởng sửa chữa xe hàng đầu, mang
-            lại niềm tin và hài lòng tuyệt đối cho khách hàng thông qua chất
-            lượng dịch vụ xuất sắc, sáng tạo và cam kết vì sự hoàn thiện của mỗi
-            chiếc xe.
+            We aspire to become a leading car repair workshop, instilling
+            absolute trust and satisfaction in customers through excellent
+            service quality, innovation, and a commitment to the perfection of
+            every vehicle.
           </p>
           <span
             style={{
@@ -143,13 +143,12 @@ const About = () => {
               lineHeight: "24px",
             }}
           >
-            Sứ mệnh của chúng tôi không chỉ dừng lại ở việc sửa chữa xe, mà còn
-            đặt trọng tâm vào việc xây dựng mối quan hệ lâu dài với khách hàng.
-            Chúng tôi hướng đến việc tạo dựng niềm tin và sự hài lòng bằng cách
-            cung cấp dịch vụ chất lượng cao, uy tín, và giá trị vượt trội. Đội
-            ngũ chuyên nghiệp của chúng tôi luôn sẵn lòng lắng nghe và tư vấn,
-            để từng chiếc xe luôn hoạt động ổn định và an toàn trên mọi cung
-            đường.
+            Our mission extends beyond just car repairs; it revolves around
+            cultivating long-term relationships with customers. We aim to build
+            trust and satisfaction by delivering high-quality, reliable, and
+            exceptional value services. Our professional team is always ready to
+            listen and advise, ensuring that each vehicle operates smoothly and
+            safely on every road.
           </p>
         </div>
       </div>
@@ -209,10 +208,8 @@ const About = () => {
                 justifyContent: "center",
               }}
             >
-              <span>Truy cap trang web</span>
-              <p>
-                Bạn chỉ cần truy cập trang web của chúng tôi thông qua đường dẫn
-              </p>
+              <span>Access the website.</span>
+              <p>You just need to access our website through the link.</p>
             </div>
           </div>
           <div
@@ -232,10 +229,11 @@ const About = () => {
                 justifyContent: "center",
               }}
             >
-              <span>Đặt lịch hẹn</span>
+              <span>Schedule an appointment.</span>
               <p>
-                Chọn Tab Lịch hẹn để có thể xem các lịch trống tại xưởng của
-                chúng tôi và tiến hành đặt xe theo khung giờ của bạn
+                Select the 'Schedule' tab to view available slots at our
+                workshop and proceed to book your vehicle according to your
+                preferred time.
               </p>
             </div>
           </div>
@@ -256,11 +254,10 @@ const About = () => {
                 justifyContent: "center",
               }}
             >
-              <span>Sửa chữa và bảo hành</span>
+              <span>Repairs and Warranty</span>
               <p>
-                Chúng tôi cam kết sử dụng các công nghệ mới nhất để có thể cải
-                thiện tình trạng xe của bạn và luôn đảm bảo về chất lượng cũng
-                như giá cả.
+                We are committed to using the latest technologies to improve the
+                condition of your vehicle and always ensure quality and pricing.
               </p>
             </div>
           </div>
@@ -295,8 +292,8 @@ const About = () => {
             marginTop: "20px",
           }}
         >
-          Chúng tôi sử dụng những công nghệ và thiết bị mới nhất trên thị trường
-          để có thể đem đến trải nghiệm tuyệt vời nhất cho khách hàng
+          We utilize the latest technologies and equipment on the market to
+          provide the best possible experience for our customers.
         </p>
         <div
           style={{
@@ -330,7 +327,7 @@ const About = () => {
                 preview={false}
                 src={QualityIcon}
               />
-              <span>Bảo hành đẩy đủ</span>
+              <span>Fully Warranty</span>
             </div>
           </div>
           <div
@@ -356,7 +353,7 @@ const About = () => {
                 preview={false}
                 src={QualityIcon}
               />
-              <span>Linh kiện mới</span>
+              <span>New Components</span>
             </div>
           </div>
           <div
@@ -382,7 +379,7 @@ const About = () => {
                 preview={false}
                 src={QualityIcon}
               />
-              <span>Công nghệ tiên tiến</span>
+              <span>Advanced Technology</span>
             </div>
           </div>
         </div>
@@ -411,7 +408,7 @@ const About = () => {
                 lineHeight: "36px",
               }}
             >
-              Kiểm định chuyên nghiệp
+              Professional Inspection
             </span>
             <p
               style={{
@@ -420,8 +417,8 @@ const About = () => {
                 lineHeight: "24px",
               }}
             >
-              Những xe mang tích xanh là những chiếc xe đó đã vượt qua quy trình
-              kiểm định khắt khe gồm 175 tiêu chí kỹ thuật{" "}
+              The green-label vehicles are those that have passed a rigorous
+              inspection process consisting of 175 technical criteria{" "}
             </p>
           </div>
           <Image style={{ height: "453px" }} preview={false} src={Standard1} />
@@ -450,7 +447,7 @@ const About = () => {
                 lineHeight: "36px",
               }}
             >
-              Chuyên viên giàu kinh nghiệm
+              Experienced specialists
             </span>
             <p
               style={{
@@ -459,9 +456,9 @@ const About = () => {
                 lineHeight: "24px",
               }}
             >
-              Đội ngũ chuyên viên kiểm định giàu kinh nghiệm và được đào tạo bài
-              bản sẽ chịu trách nhiệm kiểm tra tình trạng từng chiếc xe một cách
-              kĩ càng nhất trước khi bàn giao lại cho bạn{" "}
+              Our team of experienced and professionally trained specialists
+              will be responsible for thoroughly inspecting and repairing each
+              vehicle before handing it back to you.{" "}
             </p>
           </div>
         </div>
