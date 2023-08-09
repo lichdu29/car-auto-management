@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const STATUS = { working: 'WORKING', done: 'DONE', preOrder: 'PRE_ORDER' }
 const PAYMENTSTATUS = { paid: 'PAID', unpaid: 'UNPAID' }
+const PAYMENTMETHOD = { cash: 'CASH', bankTransfer: 'BANKTRANSFER', null: null }
 
 const orderSchema = new mongoose.Schema(
   {
@@ -55,6 +56,7 @@ const orderSchema = new mongoose.Schema(
         default: PAYMENTSTATUS.unpaid,
         required: true,
       },
+      paymentMethod: { type: String, enum: PAYMENTMETHOD, default: null },
       payAtTime: { type: Date },
     },
     startDate: { type: Date, required: true },
