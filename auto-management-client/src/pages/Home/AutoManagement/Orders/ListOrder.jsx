@@ -31,6 +31,10 @@ const STATUS = {
     label: 'Working',
     variant: 'processing',
   },
+  DELIVERED: {
+    label: 'Delivered',
+    variant: 'warning',
+  },
 }
 
 const ListOrder = () => {
@@ -121,6 +125,10 @@ const ListOrder = () => {
               label: 'Pre Order',
               value: 'PRE_ORDER',
             },
+            {
+              label: 'Delivered',
+              value: 'DELIVERED',
+            },
           ]}
         />
         <Radio.Group
@@ -151,6 +159,7 @@ const ListOrder = () => {
             title: 'Order Name',
             dataIndex: 'name',
             fixed: 'left',
+            sorter: (a, b) => a.name.localeCompare(b.name),
             render: (text, record) => (
               <Link
                 to={record._id}
@@ -166,6 +175,7 @@ const ListOrder = () => {
             title: 'Customer',
             dataIndex: 'customer',
             fixed: 'left',
+            sorter: (a, b) => a.name.localeCompare(b.name),
             render: (text) => <span>{text.customerName}</span>,
           },
           {

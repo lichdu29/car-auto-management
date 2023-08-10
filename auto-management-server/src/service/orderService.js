@@ -62,7 +62,7 @@ const OrderService = {
         { 'car.plateNumber': { $regex: search, $options: 'i' } },
         { 'customer.customerName': { $regex: search, $options: 'i' } },
       ],
-      status: status ? status : { $in: ['WORKING', 'DONE', 'PRE_ORDER'] },
+      status: status ? status : { $in: ['WORKING', 'DONE', 'PRE_ORDER', 'DELIVERED'] },
       'payment.paymentStatus': paymentStatus
         ? paymentStatus
         : { $in: ['PAID', 'UNPAID'] },

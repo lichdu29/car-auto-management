@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const STATUS = { working: 'WORKING', done: 'DONE', preOrder: 'PRE_ORDER' }
+const STATUS = { working: 'WORKING', done: 'DONE', preOrder: 'PRE_ORDER', delivered: 'DELIVERED' }
 const PAYMENTSTATUS = { paid: 'PAID', unpaid: 'UNPAID' }
 const PAYMENTMETHOD = { cash: 'CASH', bankTransfer: 'BANKTRANSFER', null: null }
 
@@ -58,6 +58,10 @@ const orderSchema = new mongoose.Schema(
       },
       paymentMethod: { type: String, enum: PAYMENTMETHOD, default: null },
       payAtTime: { type: Date },
+    },
+    staff: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Staff',
     },
     startDate: { type: Date, required: true },
     endDate: { type: Date },

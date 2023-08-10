@@ -316,6 +316,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
                 { label: 'WORKING', value: 'WORKING' },
                 { label: 'DONE', value: 'DONE' },
                 { label: 'PRE ORDER', value: 'PRE_ORDER' },
+                {label: 'DELIVERED', value: 'DELIVERED' },
               ]}
             />
           </Form.Item>
