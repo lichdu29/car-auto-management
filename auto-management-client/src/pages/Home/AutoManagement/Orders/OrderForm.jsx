@@ -18,6 +18,7 @@ import axiosInstance from '../../../../api'
 import customerService from '../../../../api/customerService'
 import orderService from '../../../../api/orderService'
 import { updateOrderThunk } from '../../../../redux/order/actions'
+import { getAllUserThunk } from '../../../../redux/user/actions'
 import useDebounce from '../../../../utils/hooks/useDebounce'
 const layout = {
   labelCol: {
@@ -57,11 +58,13 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const [ctmOption, setCtmOption] = useState([])
   const [carOption, setCarOption] = useState([])
   const [serviceOption, setServiceOption] = useState([])
+  const [userOption, setUserOption] = useState([])
   const [fetching, setFetching] = useState(false)
   const debounceCtmValue = useDebounce(searchCtmValue, 500)
   const debounceServiceValue = useDebounce(searchServiceValue, 500)
 
   const { currentUser } = useSelector((state) => state.auth)
+  const { users } = useSelector((state) => state.user)
 
   const services = useWatch('services', form)
   const totalCost = useMemo(() => {
@@ -90,7 +93,25 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       setFetching(false)
     }
     getCustomers()
-  }, [debounceCtmValue])
+  }, [debounceCtmValue]);
+
+  useEffect(() => {
+    dispatch(
+      getAllUserThunk({
+        page: 1,
+      })
+    )
+  }, [dispatch])
+
+  useEffect(() => {
+    const newUser = users?.map((i) => {
+      return {
+        value: i?.fullName,
+        label: i?.fullName,
+      };
+    });
+    setUserOption(newUser);
+  }, [users])
 
   useEffect(() => {
     setFetching(true)
@@ -306,6 +327,29 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       </Form.Item>
 
       <h4>Total Cost: ${totalCost}</h4>
+      <Form.Item
+        name="user"
+        label="User"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Select
+          mode="multiple"
+          labelInValue
+          optionLabelProp="username"
+          showSearch
+          filterOption={false}
+          // notFoundContent={fetching ? <Spin size="small" /> : null}
+          placeholder="Select User"
+          options={userOption}
+          style={{
+            width: '100%',
+          }}
+        />
+      </Form.Item>
 
       <Row className="justify-between">
         <Col span={5}>
@@ -316,7 +360,6 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
                 { label: 'WORKING', value: 'WORKING' },
                 { label: 'DONE', value: 'DONE' },
                 { label: 'PRE ORDER', value: 'PRE_ORDER' },
-                {label: 'DELIVERED', value: 'DELIVERED' },
               ]}
             />
           </Form.Item>
