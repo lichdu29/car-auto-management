@@ -18,7 +18,6 @@ import axiosInstance from '../../../../api'
 import customerService from '../../../../api/customerService'
 import orderService from '../../../../api/orderService'
 import { updateOrderThunk } from '../../../../redux/order/actions'
-import { getAllUserThunk } from '../../../../redux/user/actions'
 import useDebounce from '../../../../utils/hooks/useDebounce'
 const layout = {
   labelCol: {
@@ -58,13 +57,11 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const [ctmOption, setCtmOption] = useState([])
   const [carOption, setCarOption] = useState([])
   const [serviceOption, setServiceOption] = useState([])
-  const [userOption, setUserOption] = useState([])
   const [fetching, setFetching] = useState(false)
   const debounceCtmValue = useDebounce(searchCtmValue, 500)
   const debounceServiceValue = useDebounce(searchServiceValue, 500)
 
   const { currentUser } = useSelector((state) => state.auth)
-  const { users } = useSelector((state) => state.user)
 
   const services = useWatch('services', form)
   const totalCost = useMemo(() => {
@@ -93,25 +90,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       setFetching(false)
     }
     getCustomers()
-  }, [debounceCtmValue]);
-
-  useEffect(() => {
-    dispatch(
-      getAllUserThunk({
-        page: 1,
-      })
-    )
-  }, [dispatch])
-
-  useEffect(() => {
-    const newUser = users?.map((i) => {
-      return {
-        value: i?.fullName,
-        label: i?.fullName,
-      };
-    });
-    setUserOption(newUser);
-  }, [users])
+  }, [debounceCtmValue])
 
   useEffect(() => {
     setFetching(true)
@@ -190,9 +169,10 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
     const status = values.status
     const payment = {
       paymentStatus: values.payment,
-      paymentMethod: values.payment === 'UNPAID' ? null : values.paymentMethod,
       payAtTime: values.payment === 'PAID' ? dayjs().format(TIME_FORMAT) : null,
     }
+    const idEmployee = currentUser._id
+    const isDelivery = values.isDelivery
     const data = {
       name,
       customer,
@@ -203,6 +183,8 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       status,
       totalCost,
       payment,
+      isDelivery,
+      idEmployee,
     }
     try {
       if (type === 'create') {
@@ -220,13 +202,9 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           status,
           totalCost,
           payment,
+          isDelivery,
+          idEmployee,
         }
-        if (payment.paymentStatus === 'PAID' && payment.paymentMethod === null)
-        return notification.warning({
-          message:
-            'Invalid payment method. Please click the Payment button to proceed with the payment',
-        })
-
         dispatch(updateOrderThunk({ id: id, data: data }))
       }
     } catch (err) {
@@ -248,6 +226,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         startDate: dayjs(),
         endDate: null,
         payment: 'UNPAID',
+        isDelivery: 'WAITING',
       }}
       size="large"
     >
@@ -327,29 +306,6 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       </Form.Item>
 
       <h4>Total Cost: ${totalCost}</h4>
-      <Form.Item
-        name="user"
-        label="User"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
-      >
-        <Select
-          mode="multiple"
-          labelInValue
-          optionLabelProp="username"
-          showSearch
-          filterOption={false}
-          // notFoundContent={fetching ? <Spin size="small" /> : null}
-          placeholder="Select User"
-          options={userOption}
-          style={{
-            width: '100%',
-          }}
-        />
-      </Form.Item>
 
       <Row className="justify-between">
         <Col span={5}>
@@ -437,20 +393,23 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
             />
           </Form.Item>
         </Col>
+
         <Col span={5}>
-          <Form.Item label="Payment Method" name="paymentMethod">
+          <Form.Item
+            label="Delivery Status"
+            name="isDelivery"
+            rules={[{ required: true }]}
+          >
             <Select
-              disabled
-              initialvalues={null}
+              disabled={type === 'create' || currentUser.role === 'STAFF'}
+              initialvalues="WAITING"
               options={[
-                { label: '', value: null },
-                { label: 'CASH', value: 'CASH' },
-                { label: 'BANKTRANSFER', value: 'BANKTRANSFER' },
+                { label: 'WAITING', value: 'WAITING' },
+                { label: 'DELIVERIED', value: 'DELIVERIED' },
               ]}
             />
           </Form.Item>
         </Col>
-
       </Row>
 
       <Form.Item

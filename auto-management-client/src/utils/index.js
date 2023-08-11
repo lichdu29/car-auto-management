@@ -52,6 +52,106 @@ export function generateOrdersData(orders) {
   return data
 }
 
+export function generatePaidData(orders) {
+  const data = []
+  const today = new Date()
+  orders.forEach((order) => {
+    if (
+      order.payment.paymentStatus === 'PAID' &&
+      compareDates(today, order.updatedAt)
+    ) {
+      const day = dayjs(order.startDate).format('YYYY-MM-DD')
+      const index = data.findIndex(
+        (item) => item.day === day && item.idEmployee === order.idEmployee
+      )
+      if (index === -1) {
+        data.push({
+          day,
+          paid: 1,
+          idEmployee: order.idEmployee,
+        })
+      } else {
+        data[index].paid += 1
+      }
+    }
+  })
+  sortDaysArray(data)
+  return data
+}
+
+export function generateUnPaidData(orders) {
+  const data = []
+  const today = new Date()
+  orders.forEach((order) => {
+    if (
+      order.payment.paymentStatus === 'UNPAID' &&
+      compareDates(today, order.updatedAt)
+    ) {
+      const day = dayjs(order.startDate).format('YYYY-MM-DD')
+      const index = data.findIndex(
+        (item) => item.day === day && item.idEmployee === order.idEmployee
+      )
+      if (index === -1) {
+        data.push({
+          day,
+          unpaid: 1,
+          idEmployee: order.idEmployee,
+        })
+      } else {
+        data[index].unpaid += 1
+      }
+    }
+  })
+  sortDaysArray(data)
+  return data
+}
+
+export function generateDeliveryData(orders) {
+  const data = []
+  orders.forEach((order) => {
+    if (order.isDelivery === 'DELIVERIED') {
+      const day = dayjs(order.startDate).format('YYYY-MM-DD')
+      const index = data.findIndex(
+        (item) => item.day === day && item.isDelivery === order.isDelivery
+      )
+      if (index === -1) {
+        data.push({
+          day,
+          totalOrders: 1,
+          isDelivery: order.isDelivery ? order.isDelivery : 'WAITING',
+        })
+      } else {
+        data[index].totalOrders += 1
+      }
+    }
+  })
+  sortDaysArray(data)
+  return data
+}
+
+export function generateunDeliveryData(orders) {
+  const data = []
+  orders.forEach((order) => {
+    if (order.isDelivery === 'WAITING' || !order?.isDelivery) {
+      const day = dayjs(order.startDate).format('YYYY-MM-DD')
+      const index = data.findIndex(
+        (item) => item.day === day && item.isDelivery === order.isDelivery
+      )
+      if (index === -1) {
+        data.push({
+          day,
+          totalOrders: 1,
+          isDelivery: order.isDelivery ? order.isDelivery : 'WAITING',
+        })
+      } else {
+        data[index].totalOrders += 1
+      }
+    }
+  })
+  sortDaysArray(data)
+  return data
+}
+
 export function generateDataByWeek(data, valueType) {
   const dataByWeekObj = {}
   data.forEach((item) => {
@@ -101,4 +201,19 @@ export function handleGrowthColor(value) {
   } else if (value == 0) {
     return 'text-yellow-500'
   } else return 'text-red-500'
+}
+
+function compareDates(date1, date2) {
+  const d1 = new Date(date1)
+  const d2 = new Date(date2)
+
+  if (
+    d1.getDate() === d2.getDate() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getFullYear() === d2.getFullYear()
+  ) {
+    return true
+  } else {
+    return false
+  }
 }

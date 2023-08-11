@@ -4,7 +4,7 @@ import {
   faFileInvoice,
   faSackDollar,
 } from '@fortawesome/free-solid-svg-icons'
-import { Radio } from 'antd'
+import { Radio, Table } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -25,20 +25,18 @@ import { getAllOrderThunk } from '../../../../redux/order/actions'
 import useGenerateChartData from '../../../../utils/hooks/useGenerateChartData'
 import { growthCalculator, handleGrowthColor } from '../../../../utils'
 import { reset } from '../../../../redux/order/orderSlice'
-
+import { getAllUserThunk } from '../../../../redux/user/actions'
 function Statistics() {
   const dispatch = useDispatch()
   const { orders } = useSelector((state) => state.order)
   const [salesChartType, setSalesChartType] = useState('day')
   const [orderChartType, setOrderChartType] = useState('day')
-
-  const { salesData, orderData } = useGenerateChartData(
-    orders,
-    salesChartType,
-    orderChartType
-  )
+  const { users } = useSelector((state) => state.user)
+  const [orderList, setOrderList] = useState([])
+  const { salesData, orderData, paidData, unPaidData, delivery, undelivery } =
+    useGenerateChartData(orders, salesChartType, orderChartType, 'day')
   const { salesData: salesDatabyDay, orderData: orderDataByDay } =
-    useGenerateChartData(orders, 'day', 'day')
+    useGenerateChartData(orders, 'day', 'day', 'day')
 
   useEffect(() => {
     dispatch(
@@ -49,6 +47,43 @@ function Statistics() {
     )
     return () => dispatch(reset())
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(
+      getAllUserThunk({
+        page: 1,
+      })
+    )
+  }, [dispatch])
+
+  useEffect(() => {
+    const result = Object.values(
+      [...paidData, ...unPaidData].reduce(
+        (acc, { idEmployee, paid, unpaid }) => {
+          if (!acc[idEmployee]) {
+            acc[idEmployee] = { idEmployee, paid: 0, unpaid: 0 }
+          }
+          if (
+            paidData.some(
+              (item) => item.idEmployee === idEmployee && item.paid === paid
+            )
+          ) {
+            acc[idEmployee].paid += paid
+          }
+          if (
+            unPaidData.some(
+              (item) => item.idEmployee === idEmployee && item.unpaid === unpaid
+            )
+          ) {
+            acc[idEmployee].unpaid += unpaid
+          }
+          return acc
+        },
+        {}
+      )
+    )
+    setOrderList(result)
+  }, [paidData, unPaidData])
 
   const handleSalesTypeChange = (event) => {
     setSalesChartType(event.target.value)
@@ -94,7 +129,7 @@ function Statistics() {
           icon={faSackDollar}
         />
       </div>
-      <div className="flex gap-8">
+      <div className="flex gap-8 mb-8">
         <div className="p-8 basis-2/5 bg-neutral-100 shadow-md rounded-md">
           <div className="flex justify-between items-start">
             <div>
@@ -218,8 +253,128 @@ function Statistics() {
           </ResponsiveContainer>
         </div>
       </div>
+      <div className="flex gap-8 mb-8">
+        <div className="p-8 basis-2/5 bg-neutral-100 shadow-md rounded-md">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-lg mb-0">Delivery</h3>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" aspect={2} height="60%">
+            <BarChart data={delivery}>
+              <XAxis
+                dataKey="day"
+                tickMargin={6}
+                tick={{ stroke: '#999', strokeWidth: 0.5 }}
+                tickFormatter={(day) => {
+                  return dayjs(day, 'YYYY-MM-DD').format('MMM, DD') !==
+                    'Invalid Date'
+                    ? dayjs(day, 'YYYY-MM-DD').format('MMM, DD')
+                    : day
+                }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tickCount={3}
+                tick={{ stroke: '#999', strokeWidth: 0.5 }}
+              />
+              <CartesianGrid strokeDasharray="0" vertical={false} />
+              <Tooltip />
+              <Bar
+                type="monotone"
+                dataKey="totalOrders"
+                fill="green"
+                maxBarSize={80}
+              />
+              <Legend
+                iconType="plainline"
+                iconSize={20}
+                formatter={(_) => (
+                  <span className="font-[400] text-[18px]">
+                    Number of cars received
+                  </span>
+                )}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="p-8 basis-3/5 bg-neutral-100 shadow-md rounded-md">
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-lg mb-0">Delivery</h3>
+            </div>
+          </div>
+          <ResponsiveContainer aspect={2}>
+            <LineChart data={undelivery}>
+              <XAxis
+                dataKey="day"
+                tickMargin={6}
+                tick={{ stroke: '#999', strokeWidth: 0.5 }}
+                tickFormatter={(day) => {
+                  return dayjs(day, 'YYYY-MM-DD').format('MMM, DD') !==
+                    'Invalid Date'
+                    ? dayjs(day, 'YYYY-MM-DD').format('MMM, DD')
+                    : day
+                }}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tickCount={3}
+                tick={{ stroke: '#999', strokeWidth: 0.5 }}
+              />
+              <CartesianGrid strokeDasharray="0" vertical={false} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="totalOrders"
+                stroke="red"
+                strokeWidth={2}
+              />
+              <Legend
+                iconType="plainline"
+                iconSize={20}
+                formatter={(_) => (
+                  <span className="font-[400] text-[18px]">
+                    Number of cars not received
+                  </span>
+                )}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div>
+        <Radio.Group>
+          <Radio.Button value="today">Today</Radio.Button>
+        </Radio.Group>
+        <Table
+          className=" max-w-none"
+          columns={[
+            {
+              title: 'User Account',
+              dataIndex: 'idEmployee',
+              render: (record) => {
+                const user = users.find((item) => item._id === record)
+
+                return user ? user.fullName : 'Other Account'
+              },
+            },
+            {
+              title: 'Paid',
+              dataIndex: 'paid',
+            },
+            {
+              title: 'Unpaid',
+              dataIndex: 'unpaid',
+            },
+          ]}
+          rowKey={(row) => row._id}
+          dataSource={orderList}
+        />
+      </div>
     </>
-    
   )
 }
 
