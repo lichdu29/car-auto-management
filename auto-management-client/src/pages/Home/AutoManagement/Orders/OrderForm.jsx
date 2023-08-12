@@ -18,7 +18,6 @@ import axiosInstance from '../../../../api'
 import customerService from '../../../../api/customerService'
 import orderService from '../../../../api/orderService'
 import { updateOrderThunk } from '../../../../redux/order/actions'
-import { getAllUserThunk } from '../../../../redux/user/actions'
 import useDebounce from '../../../../utils/hooks/useDebounce'
 // import userService from '../../../../api/userService'
 // import { options } from '../../../../../../auto-management-server/src/routes/service'
@@ -62,13 +61,11 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const [ctmOption, setCtmOption] = useState([])
   const [carOption, setCarOption] = useState([])
   const [serviceOption, setServiceOption] = useState([])
-  const [userOption, setUserOption] = useState([])
   const [fetching, setFetching] = useState(false)
   const debounceCtmValue = useDebounce(searchCtmValue, 500)
   const debounceServiceValue = useDebounce(searchServiceValue, 500)
 
   const { currentUser } = useSelector((state) => state.auth)
-  const { users } = useSelector((state) => state.user)
 
   const services = useWatch('services', form)
   const totalCost = useMemo(() => {
@@ -98,6 +95,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
     }
     getCustomers()
   }, [debounceCtmValue])
+<<<<<<< HEAD
 
   useEffect(() => {
     dispatch(
@@ -117,6 +115,8 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
     console.log(newUser)
     setUserOption(newUser)
   }, [users])
+=======
+>>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
 
   useEffect(() => {
     setFetching(true)
@@ -212,9 +212,10 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
     const status = values.status
     const payment = {
       paymentStatus: values.payment,
-      paymentMethod: values.payment === 'UNPAID' ? null : values.paymentMethod,
       payAtTime: values.payment === 'PAID' ? dayjs().format(TIME_FORMAT) : null,
     }
+    const idEmployee = currentUser._id
+    const isDelivery = values.isDelivery
     const data = {
       name,
       customer,
@@ -225,6 +226,8 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       status,
       totalCost,
       payment,
+      isDelivery,
+      idEmployee,
     }
     try {
       if (type === 'create') {
@@ -250,6 +253,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           status,
           totalCost,
           payment,
+<<<<<<< HEAD
           users
         }
         if (payment.paymentStatus === 'PAID' && payment.paymentMethod === null)
@@ -258,6 +262,11 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
               'Invalid payment method. Please click the Payment button to proceed with the payment',
           })
 
+=======
+          isDelivery,
+          idEmployee,
+        }
+>>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
         dispatch(updateOrderThunk({ id: id, data: data }))
       }
     } catch (err) {
@@ -279,6 +288,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         startDate: dayjs(),
         endDate: null,
         payment: 'UNPAID',
+        isDelivery: 'WAITING',
       }}
       size="large"
     >
@@ -358,41 +368,44 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       </Form.Item>
 
       <h4>Total Cost: ${totalCost}</h4>
-      <Form.Item
-        name="user"
-        label="User"
-        rules={[
-          {
-            required: false,
-          },
-        ]}
-      >
-        <Select
-          mode="multiple"
-          labelInValue
-          optionLabelProp="label"
-          showSearch
-          filterOption={false}
-          placeholder="Select User"
-          onChange={(selectedOptions) => {
-            const updatedUserOption = selectedOptions.map((selectedOption) => {
-              const user = userOption.find(
-                (user) => user._id === selectedOption.value
-              )
-              return {
-                key: selectedOption.value,
-                label: selectedOption.label,
-              }
-            })
-            console.log(updatedUserOption);
-            setUpdateUser(updatedUserOption)
-          }}
-          options={userOption}
-          style={{
-            width: '100%',
-          }}
-        />
-      </Form.Item>
+<<<<<<< HEAD
+//       <Form.Item
+//         name="user"
+//         label="User"
+//         rules={[
+//           {
+//             required: false,
+//           },
+//         ]}
+//       >
+//         <Select
+//           mode="multiple"
+//           labelInValue
+//           optionLabelProp="label"
+//           showSearch
+//           filterOption={false}
+//           placeholder="Select User"
+//           onChange={(selectedOptions) => {
+//             const updatedUserOption = selectedOptions.map((selectedOption) => {
+//               const user = userOption.find(
+//                 (user) => user._id === selectedOption.value
+//               )
+//               return {
+//                 key: selectedOption.value,
+//                 label: selectedOption.label,
+//               }
+//             })
+//             console.log(updatedUserOption);
+//             setUpdateUser(updatedUserOption)
+//           }}
+//           options={userOption}
+//           style={{
+//             width: '100%',
+//           }}
+//         />
+//       </Form.Item>
+// =======
+>>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
 
       <Row className="justify-between">
         <Col span={5}>
@@ -481,15 +494,19 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
             />
           </Form.Item>
         </Col>
+
         <Col span={5}>
-          <Form.Item label="Payment Method" name="paymentMethod">
+          <Form.Item
+            label="Delivery Status"
+            name="isDelivery"
+            rules={[{ required: true }]}
+          >
             <Select
-              disabled
-              initialvalues={null}
+              disabled={type === 'create' || currentUser.role === 'STAFF'}
+              initialvalues="WAITING"
               options={[
-                { label: '', value: null },
-                { label: 'CASH', value: 'CASH' },
-                { label: 'BANKTRANSFER', value: 'BANKTRANSFER' },
+                { label: 'WAITING', value: 'WAITING' },
+                { label: 'DELIVERIED', value: 'DELIVERIED' },
               ]}
             />
           </Form.Item>
