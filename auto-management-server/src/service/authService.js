@@ -13,7 +13,7 @@ const AuthService = {
         role: user.role,
       },
       process.env.ACCESS_TOKEN_SECRET_KEY,
-      { expiresIn: '1h' }
+      { expiresIn: '10h' }
     )
   },
 

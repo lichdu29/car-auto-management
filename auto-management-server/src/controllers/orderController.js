@@ -25,6 +25,10 @@ class OrderController {
   async delete(req, res, next) {
     return orderService.deleteOrder(req, res, next)
   }
+
+  async getOrder(req, res, next) {
+    return orderService.getOrderByUserId(req, res, next)
+  }
 }
 
 module.exports = new OrderController()

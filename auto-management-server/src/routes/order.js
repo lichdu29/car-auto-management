@@ -11,5 +11,6 @@ route.delete('/:id', orderController.delete)
 route.put('/:id', orderController.update)
 route.get('/:id', orderController.get)
 route.get('/', orderController.list)
+route.get('/order-by-user/:userId', orderController.getOrder)
 
 module.exports = route

@@ -17,6 +17,18 @@ const orderSchema = new mongoose.Schema(
         required: true,
       },
     },
+    users: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'users',
+        },
+        userFullName: {
+          type: String,
+          required: true,
+        },
+      }
+    ],
     car: {
       carId: {
         type: mongoose.Schema.Types.ObjectId,

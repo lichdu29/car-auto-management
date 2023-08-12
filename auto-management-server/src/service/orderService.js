@@ -6,6 +6,7 @@ const {
   validateAndUpdateDocument,
   formatDate,
 } = require('../utils')
+const { Schema } = require('mongoose')
 
 const OrderService = {
   createOrder: async (req, res) => {
@@ -105,21 +106,47 @@ const OrderService = {
     }
   },
 
-  updateOrder: async (req, res) => {
-    const orderId = req.params.id
-    const { name, startDate, endDate, totalCost } = req.body
-    try {
-      const order = await Order.findById(orderId)
-      if (!order) {
-        return res.status(404).json({ message: 'Order not found' })
-      }
+  getOrderByUserId: async (req, res) => {
+    const userId = req.params.userId
+    const ordersOfUser = []
+      try {
+        const orders = await Order.find()
+        for (const order of orders) {
 
-      const excludedFields = ['customer', 'car']
+          const orderDoneBy = order.users
+  
+          const userNeeded = orderDoneBy.filter((user) => {
+            return user.userId.equals(userId)
+          })
+          if (userNeeded.length > 0) {
+            ordersOfUser.push(order)
+          }
+          else {
+            continue
+          }
+
+        }
+        res.status(200).json(ordersOfUser)
+      } catch (error) {
+        res.status(500).json(error)
+      }
+  },
+
+  updateOrder: async (req, res) => {
+    const orderId = req.params.id;
+    const { name, startDate, endDate, totalCost, users } = req.body;
+    try {
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+  
+      const excludedFields = ['customer', 'car']; // Remove 'user' from excludedFields
       if (req.body.endDate) {
-        req.body.endDate = formatDate(req.body.endDate)
+        req.body.endDate = formatDate(req.body.endDate);
       }
       if (req.body.startDate) {
-        req.body.startDate = formatDate(req.body.startDate)
+        req.body.startDate = formatDate(req.body.startDate);
       }
       const updatedOrder = await validateAndUpdateDocument(
         order,
@@ -127,31 +154,45 @@ const OrderService = {
           ...req.body,
         },
         excludedFields
-      )
-      res.json(updatedOrder)
-
-      // update customer
-      if (name === updatedOrder.name && startDate === updatedOrder.startDate)
-        return
+      );
+      res.json(updatedOrder);
+  
+      // Update users
+      if (users) {
+        order.users = users; // Update the users field in the order
+        await order.save();
+      }
+  
+      // Update customer
+      if (name === updatedOrder.name && startDate === updatedOrder.startDate) {
+        return;
+      }
       await Customer.updateOne(
-        { _id: updatedOrder.customer.customerId, 'orders.orderId': orderId },
+        {
+          _id: updatedOrder.customer.customerId,
+          'orders.orderId': orderId,
+        },
         {
           $set: {
             'orders.$.name': updatedOrder.name,
             'orders.$.date': updatedOrder.startDate,
           },
         }
-      )
-
-      // update car
+      );
+  
+      // Update car
       if (
         startDate === updatedOrder.startDate &&
         endDate === updatedOrder.endDate &&
         totalCost === updatedOrder.totalCost
-      )
-        return
+      ) {
+        return;
+      }
       await Car.updateOne(
-        { _id: updatedOrder.car.carId, 'repairs.orderId': orderId },
+        {
+          _id: updatedOrder.car.carId,
+          'repairs.orderId': orderId,
+        },
         {
           $set: {
             'repairs.$.startDate': updatedOrder.startDate,
@@ -159,10 +200,10 @@ const OrderService = {
             'repairs.$.cost': updatedOrder.totalCost,
           },
         }
-      )
+      );
     } catch (err) {
-      console.log(err)
-      handleError(err, res, 'Failed to update order')
+      console.log(err);
+      handleError(err, res, 'Failed to update order');
     }
   },
 
