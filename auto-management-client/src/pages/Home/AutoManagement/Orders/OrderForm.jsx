@@ -20,6 +20,9 @@ import orderService from '../../../../api/orderService'
 import { updateOrderThunk } from '../../../../redux/order/actions'
 import { getAllUserThunk } from '../../../../redux/user/actions'
 import useDebounce from '../../../../utils/hooks/useDebounce'
+// import userService from '../../../../api/userService'
+// import { options } from '../../../../../../auto-management-server/src/routes/service'
+// import { match } from 'assert'
 const layout = {
   labelCol: {
     span: 12,
@@ -53,6 +56,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   const { id } = useParams()
   const [form] = useForm()
   const dispatch = useDispatch()
+  const [updateUser, setUpdateUser] = useState([])
   const [searchCtmValue, setSearchCtmValue] = useState('')
   const [searchServiceValue, setSearchServiceValue] = useState('')
   const [ctmOption, setCtmOption] = useState([])
@@ -93,7 +97,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       setFetching(false)
     }
     getCustomers()
-  }, [debounceCtmValue]);
+  }, [debounceCtmValue])
 
   useEffect(() => {
     dispatch(
@@ -106,11 +110,12 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
   useEffect(() => {
     const newUser = users?.map((i) => {
       return {
-        value: i?.fullName,
+        value: i?._id,
         label: i?.fullName,
-      };
-    });
-    setUserOption(newUser);
+      }
+    })
+    console.log(newUser)
+    setUserOption(newUser)
   }, [users])
 
   useEffect(() => {
@@ -151,6 +156,23 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       })
     }
   }
+  // const handleUserChange = async (data) => {
+  //   try {
+  //     const customer = await userService.getUserById(data.value)
+  //     if (customer) {
+  //       const cars = customer.cars
+  //       const options = cars.map((car) => ({
+  //         value: car.carId,
+  //         label: car.plateNumber,
+  //       }))
+  //       setCarOption(options)
+  //     }
+  //   } catch (err) {
+  //     notification.error({
+  //       message: err?.error || 'Failed to select customer',
+  //     })
+  //   }
+  // }
 
   useEffect(() => {
     if (!orderDetail) return
@@ -212,6 +234,14 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         })
         form.resetFields()
       } else if (type === 'update') {
+        const users = updateUser.map(
+          (user) => {
+            return {
+              userId: user.key,
+              userFullName: user.label
+            }
+          }
+        )
         const data = {
           name,
           startDate,
@@ -220,12 +250,13 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           status,
           totalCost,
           payment,
+          users
         }
         if (payment.paymentStatus === 'PAID' && payment.paymentMethod === null)
-        return notification.warning({
-          message:
-            'Invalid payment method. Please click the Payment button to proceed with the payment',
-        })
+          return notification.warning({
+            message:
+              'Invalid payment method. Please click the Payment button to proceed with the payment',
+          })
 
         dispatch(updateOrderThunk({ id: id, data: data }))
       }
@@ -332,18 +363,30 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         label="User"
         rules={[
           {
-            required: true,
+            required: false,
           },
         ]}
       >
         <Select
           mode="multiple"
           labelInValue
-          optionLabelProp="username"
+          optionLabelProp="label"
           showSearch
           filterOption={false}
-          // notFoundContent={fetching ? <Spin size="small" /> : null}
           placeholder="Select User"
+          onChange={(selectedOptions) => {
+            const updatedUserOption = selectedOptions.map((selectedOption) => {
+              const user = userOption.find(
+                (user) => user._id === selectedOption.value
+              )
+              return {
+                key: selectedOption.value,
+                label: selectedOption.label,
+              }
+            })
+            console.log(updatedUserOption);
+            setUpdateUser(updatedUserOption)
+          }}
           options={userOption}
           style={{
             width: '100%',
@@ -360,6 +403,7 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
                 { label: 'WORKING', value: 'WORKING' },
                 { label: 'DONE', value: 'DONE' },
                 { label: 'PRE ORDER', value: 'PRE_ORDER' },
+                { label: 'DELIVERED', value: 'DELIVERED' },
               ]}
             />
           </Form.Item>
@@ -450,7 +494,6 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
             />
           </Form.Item>
         </Col>
-
       </Row>
 
       <Form.Item

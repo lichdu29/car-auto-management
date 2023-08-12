@@ -8,67 +8,72 @@ import OrderForm from './OrderForm'
 const TIME_FORMAT = 'YYYY-MM-DD HH:mm'
 
 const OrderDetail = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { state } = useLocation()
-  const dispatch = useDispatch()
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const { state } = useLocation()
+    const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (!id) return
-    dispatch(getOrderDetails(id))
-  }, [dispatch, id])
+    useEffect(() => {
+        if (!id) return
+        dispatch(getOrderDetails(id))
+    }, [dispatch, id])
 
-  const { isLoading, orderDetail } = useSelector((state) => state.order)
+    const { isLoading, orderDetail } = useSelector((state) => state.order)
 
-  const newOrderDetail = useMemo(() => {
-    const customer = {
-      label: orderDetail?.customer.customerName,
-      value: orderDetail?.customer.customerId,
+    const newOrderDetail = useMemo(() => {
+        const customer = {
+            label: orderDetail?.customer.customerName,
+            value: orderDetail?.customer.customerId,
+        }
+        const car = {
+            label: orderDetail?.car.plateNumber,
+            value: orderDetail?.car.carId,
+        }
+        const startDate = dayjs(orderDetail?.startDate, TIME_FORMAT)
+        const endDate = orderDetail?.endDate
+            ? dayjs(orderDetail.endDate, TIME_FORMAT)
+            : null
+        const services = orderDetail?.services.map((service) => ({
+            value: service.cost,
+            label: service.name,
+            key: service.serviceId,
+        }))
+        const users = orderDetail?.users.map((user) => ({
+            label: user.userFullName,
+            value: user.userId,
+        }))
+        const status = orderDetail?.status
+        const name = orderDetail?.name
+        const payment = orderDetail?.payment.paymentStatus
+        const paymentMethod = orderDetail?.payment.paymentMethod
+        return {
+            customer,
+            car,
+            startDate,
+            endDate,
+            services,
+            status,
+            name,
+            payment,
+            paymentMethod,
+            users,
+        }
+    }, [orderDetail])
+
+    useLayoutEffect(() => {
+        if (!orderDetail) return
+        navigate('.', {
+            replace: true,
+            state: {
+                breadcrumb: orderDetail.name,
+            },
+        })
+    }, [orderDetail, navigate, state?.breadcrumb])
+
+    if (!id || (!orderDetail && !isLoading)) {
+        return <NotFound />
     }
-    const car = {
-      label: orderDetail?.car.plateNumber,
-      value: orderDetail?.car.carId,
-    }
-    const startDate = dayjs(orderDetail?.startDate, TIME_FORMAT)
-    const endDate = orderDetail?.endDate
-      ? dayjs(orderDetail.endDate, TIME_FORMAT)
-      : null
-    const services = orderDetail?.services.map((service) => ({
-      value: service.cost,
-      label: service.name,
-      key: service.serviceId,
-    }))
-    const status = orderDetail?.status
-    const name = orderDetail?.name
-    const payment = orderDetail?.payment.paymentStatus
-    const paymentMethod = orderDetail?.payment.paymentMethod
-    return {
-      customer,
-      car,
-      startDate,
-      endDate,
-      services,
-      status,
-      name,
-      payment,
-      paymentMethod
-    }
-  }, [orderDetail])
-
-  useLayoutEffect(() => {
-    if (!orderDetail) return
-    navigate('.', {
-      replace: true,
-      state: {
-        breadcrumb: orderDetail.name,
-      },
-    })
-  }, [orderDetail, navigate, state?.breadcrumb])
-
-  if (!id || (!orderDetail && !isLoading)) {
-    return <NotFound />
-  }
-  return <OrderForm orderDetail={newOrderDetail} type="update" />
+    return <OrderForm orderDetail={newOrderDetail} type="update" />
 }
 
 export default OrderDetail
