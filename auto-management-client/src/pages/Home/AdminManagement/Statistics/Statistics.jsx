@@ -4,9 +4,11 @@ import {
   faFileInvoice,
   faSackDollar,
 } from '@fortawesome/free-solid-svg-icons'
-import { Radio, Table } from 'antd'
+import { Radio, Table, Select } from 'antd'
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
 import dayjs from 'dayjs'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Bar,
@@ -27,10 +29,14 @@ import { growthCalculator, handleGrowthColor } from '../../../../utils'
 import { reset } from '../../../../redux/order/orderSlice'
 import { getAllUserThunk } from '../../../../redux/user/actions'
 function Statistics() {
+  const chartRef = useRef(null)
   const dispatch = useDispatch()
   const { orders } = useSelector((state) => state.order)
   const [salesChartType, setSalesChartType] = useState('day')
+  const [optionOrderName, setOptionOrderName] = useState([])
+  const [selectNameOrder, setSelectNameOrder] = useState('')
   const [orderChartType, setOrderChartType] = useState('day')
+  const [status, setStatus] = useState('ALL')
   const { users } = useSelector((state) => state.user)
   const [orderList, setOrderList] = useState([])
   const { salesData, orderData, paidData, unPaidData, delivery, undelivery } =
@@ -43,10 +49,12 @@ function Statistics() {
       getAllOrderThunk({
         page: 1,
         limit: 1000,
+        status: status === 'ALL' ? null : status,
+        search: selectNameOrder,
       })
     )
     return () => dispatch(reset())
-  }, [dispatch])
+  }, [dispatch, status, selectNameOrder])
 
   useEffect(() => {
     dispatch(
@@ -84,6 +92,109 @@ function Statistics() {
     )
     setOrderList(result)
   }, [paidData, unPaidData])
+
+  useEffect(() => {
+    const getList = () => {
+      let tmpOptionOrderName = [
+        {
+          value: '',
+          label: 'All',
+        },
+      ]
+      getListOrderNameChart().forEach((item) => {
+        tmpOptionOrderName.push({
+          value: item,
+          label: item,
+        })
+      })
+      setOptionOrderName(tmpOptionOrderName)
+    }
+    if (selectNameOrder === '') {
+      getList()
+    }
+  }, [orders])
+
+  const getListOrderNameChart = () => {
+    let listName = []
+    orders.forEach((item) => {
+      let name = item?.customer?.customerName
+      if (!listName.includes(name)) {
+        listName.push(name)
+      }
+    })
+    return listName
+  }
+
+  const getListDataChart = () => {
+    let tmpListStatus = ['WORKING', 'DONE', 'PRE_ORDER', 'DELIVERED']
+    let listDataName = []
+    let dataList = []
+    let listName = getListOrderNameChart()
+    tmpListStatus.forEach((status) => {
+      let dataItemStatus = []
+      for (let i = 0; i < listName.length; i++) {
+        dataItemStatus.push(0)
+      }
+      listName?.forEach((name, indexName) => {
+        let indexData = orders.filter((o) => {
+          return name === o?.customer?.customerName && o?.status === status
+        })
+        dataItemStatus[indexName] = indexData?.length
+      })
+      dataList.push({
+        name: status,
+        data: dataItemStatus,
+      })
+    })
+    return dataList
+  }
+
+  const optionsHightChart = {
+    chart: {
+      type: 'column',
+    },
+    title: {
+      text: '',
+      align: 'left',
+    },
+    xAxis: {
+      categories: getListOrderNameChart(),
+    },
+    yAxis: {
+      min: 0,
+      title: {
+        text: 'Count trophies',
+      },
+      stackLabels: {
+        enabled: true,
+      },
+    },
+    legend: {
+      align: 'left',
+      x: 70,
+      verticalAlign: 'top',
+      y: 70,
+      floating: true,
+      backgroundColor:
+        Highcharts.defaultOptions.legend.backgroundColor || 'white',
+      borderColor: '#CCC',
+      borderWidth: 1,
+      shadow: false,
+    },
+    tooltip: {
+      headerFormat: '<b>{point.x}</b><br/>',
+      pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}',
+    },
+    plotOptions: {
+      column: {
+        stacking: 'normal',
+        dataLabels: {
+          enabled: true,
+        },
+      },
+    },
+    series: getListDataChart(),
+  }
 
   const handleSalesTypeChange = (event) => {
     setSalesChartType(event.target.value)
@@ -145,6 +256,37 @@ function Statistics() {
                 </span>
               </h4>
             </div>
+            <Select
+              defaultValue="All"
+              style={{ width: 120 }}
+              onChange={(e) => {
+                let newStatus = ''
+                switch (e) {
+                  case 'Preorder':
+                    newStatus = 'PRE_ORDER'
+                    break
+                  case 'Working':
+                    newStatus = 'WORKING'
+                    break
+                  case 'Done':
+                    newStatus = 'PRE_ORDER'
+                    break
+                  case 'Delivered':
+                    newStatus = 'DELIVERED'
+                    break
+                  default:
+                    break
+                }
+                setStatus(newStatus)
+              }}
+              options={[
+                { value: 'All', label: 'All' },
+                { value: 'Preorder', label: 'Preorder' },
+                { value: 'Working', label: 'Working' },
+                { value: 'Done', label: 'Done' },
+                { value: 'Delivered', label: 'Delivered' },
+              ]}
+            />
             <Radio.Group onChange={handleOrderTypeChange}>
               <Radio.Button value="day">Day</Radio.Button>
               <Radio.Button value="week">Week</Radio.Button>
@@ -253,98 +395,30 @@ function Statistics() {
           </ResponsiveContainer>
         </div>
       </div>
+
       <div className="flex gap-8 mb-8">
-        <div className="p-8 basis-2/5 bg-neutral-100 shadow-md rounded-md">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-bold text-lg mb-0">Delivery</h3>
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" aspect={2} height="60%">
-            <BarChart data={delivery}>
-              <XAxis
-                dataKey="day"
-                tickMargin={6}
-                tick={{ stroke: '#999', strokeWidth: 0.5 }}
-                tickFormatter={(day) => {
-                  return dayjs(day, 'YYYY-MM-DD').format('MMM, DD') !==
-                    'Invalid Date'
-                    ? dayjs(day, 'YYYY-MM-DD').format('MMM, DD')
-                    : day
-                }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tickCount={3}
-                tick={{ stroke: '#999', strokeWidth: 0.5 }}
-              />
-              <CartesianGrid strokeDasharray="0" vertical={false} />
-              <Tooltip />
-              <Bar
-                type="monotone"
-                dataKey="totalOrders"
-                fill="green"
-                maxBarSize={80}
-              />
-              <Legend
-                iconType="plainline"
-                iconSize={20}
-                formatter={(_) => (
-                  <span className="font-[400] text-[18px]">
-                    Number of cars received
-                  </span>
-                )}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
         <div className="p-8 basis-3/5 bg-neutral-100 shadow-md rounded-md">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-bold text-lg mb-0">Delivery</h3>
+          <div className="flex justify-between items-center">
+            <div className="">Chart order theo ngươi</div>
+            <div className="" style={{ textAlign: 'left' }}>
+              <Select
+                defaultValue="All"
+                style={{ width: 120 }}
+                onChange={(e) => {
+                  setSelectNameOrder(e)
+                }}
+                options={optionOrderName}
+              />
             </div>
           </div>
-          <ResponsiveContainer aspect={2}>
-            <LineChart data={undelivery}>
-              <XAxis
-                dataKey="day"
-                tickMargin={6}
-                tick={{ stroke: '#999', strokeWidth: 0.5 }}
-                tickFormatter={(day) => {
-                  return dayjs(day, 'YYYY-MM-DD').format('MMM, DD') !==
-                    'Invalid Date'
-                    ? dayjs(day, 'YYYY-MM-DD').format('MMM, DD')
-                    : day
-                }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tickCount={3}
-                tick={{ stroke: '#999', strokeWidth: 0.5 }}
-              />
-              <CartesianGrid strokeDasharray="0" vertical={false} />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="totalOrders"
-                stroke="red"
-                strokeWidth={2}
-              />
-              <Legend
-                iconType="plainline"
-                iconSize={20}
-                formatter={(_) => (
-                  <span className="font-[400] text-[18px]">
-                    Number of cars not received
-                  </span>
-                )}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <HighchartsReact
+            ref={chartRef}
+            highcharts={Highcharts}
+            options={optionsHightChart}
+          />
         </div>
       </div>
+
       <div>
         <Radio.Group>
           <Radio.Button value="today">Today</Radio.Button>

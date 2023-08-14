@@ -95,28 +95,6 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
     }
     getCustomers()
   }, [debounceCtmValue])
-<<<<<<< HEAD
-
-  useEffect(() => {
-    dispatch(
-      getAllUserThunk({
-        page: 1,
-      })
-    )
-  }, [dispatch])
-
-  useEffect(() => {
-    const newUser = users?.map((i) => {
-      return {
-        value: i?._id,
-        label: i?.fullName,
-      }
-    })
-    console.log(newUser)
-    setUserOption(newUser)
-  }, [users])
-=======
->>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
 
   useEffect(() => {
     setFetching(true)
@@ -237,14 +215,12 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
         })
         form.resetFields()
       } else if (type === 'update') {
-        const users = updateUser.map(
-          (user) => {
-            return {
-              userId: user.key,
-              userFullName: user.label
-            }
+        const users = updateUser.map((user) => {
+          return {
+            userId: user.key,
+            userFullName: user.label,
           }
-        )
+        })
         const data = {
           name,
           startDate,
@@ -253,20 +229,9 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
           status,
           totalCost,
           payment,
-<<<<<<< HEAD
-          users
-        }
-        if (payment.paymentStatus === 'PAID' && payment.paymentMethod === null)
-          return notification.warning({
-            message:
-              'Invalid payment method. Please click the Payment button to proceed with the payment',
-          })
-
-=======
           isDelivery,
           idEmployee,
         }
->>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
         dispatch(updateOrderThunk({ id: id, data: data }))
       }
     } catch (err) {
@@ -368,45 +333,6 @@ const OrderForm = ({ type = 'create', orderDetail }) => {
       </Form.Item>
 
       <h4>Total Cost: ${totalCost}</h4>
-<<<<<<< HEAD
-//       <Form.Item
-//         name="user"
-//         label="User"
-//         rules={[
-//           {
-//             required: false,
-//           },
-//         ]}
-//       >
-//         <Select
-//           mode="multiple"
-//           labelInValue
-//           optionLabelProp="label"
-//           showSearch
-//           filterOption={false}
-//           placeholder="Select User"
-//           onChange={(selectedOptions) => {
-//             const updatedUserOption = selectedOptions.map((selectedOption) => {
-//               const user = userOption.find(
-//                 (user) => user._id === selectedOption.value
-//               )
-//               return {
-//                 key: selectedOption.value,
-//                 label: selectedOption.label,
-//               }
-//             })
-//             console.log(updatedUserOption);
-//             setUpdateUser(updatedUserOption)
-//           }}
-//           options={userOption}
-//           style={{
-//             width: '100%',
-//           }}
-//         />
-//       </Form.Item>
-// =======
->>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
-
       <Row className="justify-between">
         <Col span={5}>
           <Form.Item name="status" label="Status" rules={[{ required: true }]}>
