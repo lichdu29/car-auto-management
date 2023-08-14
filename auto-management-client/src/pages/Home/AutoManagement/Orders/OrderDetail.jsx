@@ -73,54 +73,7 @@ const OrderDetail = () => {
     if (!id || (!orderDetail && !isLoading)) {
         return <NotFound />
     }
-<<<<<<< HEAD
     return <OrderForm orderDetail={newOrderDetail} type="update" />
-=======
-    const car = {
-      label: orderDetail?.car.plateNumber,
-      value: orderDetail?.car.carId,
-    }
-    const startDate = dayjs(orderDetail?.startDate, TIME_FORMAT)
-    const endDate = orderDetail?.endDate
-      ? dayjs(orderDetail.endDate, TIME_FORMAT)
-      : null
-    const services = orderDetail?.services.map((service) => ({
-      value: service.cost,
-      label: service.name,
-      key: service.serviceId,
-    }))
-    const status = orderDetail?.status
-    const name = orderDetail?.name
-    const payment = orderDetail?.payment.paymentStatus
-    const isDelivery = orderDetail?.isDelivery
-    return {
-      customer,
-      car,
-      startDate,
-      endDate,
-      services,
-      status,
-      name,
-      payment,
-      isDelivery,
-    }
-  }, [orderDetail])
-
-  useLayoutEffect(() => {
-    if (!orderDetail) return
-    navigate('.', {
-      replace: true,
-      state: {
-        breadcrumb: orderDetail.name,
-      },
-    })
-  }, [orderDetail, navigate, state?.breadcrumb])
-
-  if (!id || (!orderDetail && !isLoading)) {
-    return <NotFound />
-  }
-  return <OrderForm orderDetail={newOrderDetail} type="update" />
->>>>>>> 2f1da9c6d27aa98ec591da8c393649bf3e2e377e
 }
 
 export default OrderDetail
